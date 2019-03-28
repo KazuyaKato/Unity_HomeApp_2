@@ -1,0 +1,37 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SettingDB : MonoBehaviour {
+
+	[SerializeField]
+	public class SetDB{
+		[SerializeField]
+	public int Q_num;
+	public bool Gaku;
+	public bool Tone;
+	public bool Song;
+	public bool Chord;
+	public bool PushNoticeA;
+	public bool PushNoticeB;
+	public int HourA;
+	public int MinA;
+	public int HourB;
+	public int MinB;
+
+
+	public SetDB(){
+		Q_num = 5;
+		Gaku = true;
+		Tone = true;
+		Song = true;
+		Chord = true;
+		PushNoticeA = true;
+		PushNoticeB = true;
+		HourA = 7;
+		MinA = 0;
+		HourB = 19;
+		MinB = 0;
+		}
+	}
+}

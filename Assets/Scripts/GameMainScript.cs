@@ -43,6 +43,7 @@ public class GameMainScript : MonoBehaviour {
     // 管理データ
     string Daikomoku_str;
     string[] Card_All_str = new string[5]; // 0=A 1=B 2=C 3=D 4=E
+    int[] Card_All_int = new int[5]; // 0=A 1=B 2=C 3=D 4=E
 
     GameObject Deck; // カード５枚の親
     GameObject CardField; // カードフィールド(場)
@@ -71,7 +72,6 @@ public class GameMainScript : MonoBehaviour {
         flg_CardBring = false;  // カード保持フラグ初期化
         flg_Put = false;        // カード置きフラグ初期化
         flg_operate = true;     // カード操作フラグ初期化
-
         if (GameLevel.Equals(0))
             GameLevel = 1;
 
@@ -156,6 +156,7 @@ public class GameMainScript : MonoBehaviour {
         for (int i = 0;i < Array.Length;i++)
         {
             Card_queue.Enqueue(Array[i]); // シャッフルしたカードデータをデッキに格納
+            Debug.Log("Card_queue.count = " + Card_queue.Count);
         }
 
         for (int i = 0; i < Card_All_str.Length; i++)   // Card_All_strは画面のカード数。常に5
@@ -182,16 +183,42 @@ public class GameMainScript : MonoBehaviour {
      // 本当に埋める項目があるかの確認
     // ついでに入っている値の確認
         string[] tmp = new string[5];
+        int cnt = 0;
+        int cnt_empty = 0;
         for (int i = 0; i < Card_All_str.Length; i++)   // Card_All_strは画面のカード数。基本5
         {
             if ((Card_All_str[i] == ""))
             {
                 if (Card_queue.Count > 0)
-                    Card_All_str[i] = NoToSentence(Card_queue.Dequeue());
+                {
+                    int tmpi = Card_queue.Dequeue();
+                    Card_All_str[i] = NoTolsCode(tmpi);
+                    Card_All_int[i] = tmpi; // 番号を保存
+                    Card_All_txt[i] = NoToSentence(tmpi);
+                }
             }
         }
             DrawScreen();
     }
+    // --------------------------------------------------------------------------------
+    // NoTolsCode(int _no)
+    // Noより問題文を取得する
+    // --------------------------------------------------------------------------------
+    public string NoTolsCode(int _no)
+    {
+        string str = "";
+        for (int i = 0; i < ls_Shomon.Count; i++)
+        {
+            if (_no == ls_Shomon[i].No)
+            {
+                str = ls_Shomon[i].lsCode;
+                break;
+            }
+
+        }
+        return str;
+    }
+
     // --------------------------------------------------------------------------------
     // NoToSentence(int _no)
     // Noより問題文を取得する
@@ -354,7 +381,6 @@ public class GameMainScript : MonoBehaviour {
                 {
                     if (i == cnt)
                     {
-//                        GameObject obj = child.GetComponent<GameObject>();
                         child.gameObject.SetActive(false);
                         break;
                     }
@@ -541,6 +567,9 @@ public class GameMainScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        // 縮小test
+        //
+
         // カードを持っていない
         if ((flg_CardBring == false) && // カード保持していない checked
             (flg_Put == true) &&        // カード置いてある
@@ -549,8 +578,6 @@ public class GameMainScript : MonoBehaviour {
             tForm.GetComponent<Canvas>().enabled = true;
             flg_JnC = true;
         }
-//        Debug.Log("flg_CardBring = " + flg_CardBring + " / flg_Put = " + flg_Put +
-//        " / flg_JnC = " + flg_JnC);
     }
 
 	// 自己解説読み込み
@@ -1209,38 +1236,24 @@ public class GameMainScript : MonoBehaviour {
         // どうやればそれができるのか。
         // それぞれのCardFieldに聞きにいくしかあるまい。
         int cnt = 0;
-        foreach (Transform child in CardField.transform)
-        {
-            foreach (Transform son in child.transform)
-            {
-                if (son.name == "ColPos_JH")    // 小学生
-                {
-                    FieldCube script = son.GetComponent<FieldCube>();
-                    cnt += script.Card_Count;
-                }
-                else if (son.name == "ColPos_M") // 中学生
-                {
-                    FieldCube script = son.GetComponent<FieldCube>();
-                    cnt += script.Card_Count;
-                }
-            }
-        }
-
-        Debug.Log("載っているカードの枚数: " + cnt);
 
         // 正解・不正解判定
         string[] strArray;  // 置かれたオブジェクト名を保持するArray
-
-        cnt = 0;    //  カウント用
+        cnt = 0; // カウント用
         foreach(Transform child in Deck.transform)
         {
             cnt++;
         }
         strArray = new string[cnt];
 
-        for (int i = 0; i < cnt; i++){
-            strArray[i] = "";
+        for(int i = 0; i < cnt; i++)
+        {
+            strArray[i] = "";   // 配列の初期化
         }
+
+        // どのカードがどのlsCodeかはこのScriptが持っている。
+        // 問題はどれがどのフィールドに置かれているかということ
+        // これを取得すればよい。
 
         foreach(Transform CFChild in CardField.transform)
         {
@@ -1249,16 +1262,66 @@ public class GameMainScript : MonoBehaviour {
                 if(son.name == "ColPos_JH") // 小学生
                 {
                     FieldCube script = son.GetComponent<FieldCube>();
-                    for(int i = 0; i < cnt; i++)
+                    for ( int i = 0; i< cnt; i++)
                     {
-                        if (script.Card_Put(i) == false)
+                        if(script.Card_Put(i) == true)
                         {
+                            if (Card_All_str[i] == "JH")
+                                strArray[i] = "正解";
+                            else
+                                strArray[i] = "不正解";
                         }
-
                     }
                 }
+                if (son.name == "ColPos_M") // 小学生
+                {
+                    FieldCube script = son.GetComponent<FieldCube>();
+                    for (int i = 0; i < cnt; i++)
+                    {
+                        if (script.Card_Put(i) == true)
+                        {
+                            if (Card_All_str[i] == "MD")
+                                strArray[i] = "正解";
+                            else
+                                strArray[i] = "不正解";
+                        }
+                    }
+                }
+
             }
         }
+        // 花丸の表示
+        for (int i = 0; i < cnt; i++)
+        {
+            if(strArray[i] == "正解" || strArray[i] == "不正解")
+            {
+                foreach (Transform child in Deck.transform)
+                {
+                    if(child.name == "card_" + i)
+                    {
+                        foreach(Transform son in child.transform)
+                        {
+                            if (strArray[i] == "正解" && son.name == "Hanamaru")
+                            {
+                                son.GetComponent<Image>().enabled = true;
+                                // ここで縮小命令をかける
+                                break;
+                            }
+                            else if(strArray[i] == "不正解" && son.name == "Batu")
+                            {
+                                son.GetComponent<Image>().enabled = true;
+                                Card_queue.Enqueue(Card_All_int[i]);
+                                Debug.Log("Card_queue.count_Wrong = " + Card_queue.Count);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+            }
+        }
+
     }
 
 }

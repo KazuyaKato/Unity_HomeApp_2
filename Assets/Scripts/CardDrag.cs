@@ -14,7 +14,7 @@ public class CardDrag : MonoBehaviour
 
     bool colflg = false; // 衝突用フラグ
     bool pointerflg = false; // 持っているかどうかのフラグ
-    public bool flg_Recuction = false; // 縮小フラグ
+    public bool flg_Reduction = false; //  縮小フラグ
 
     // --------------------------------------------------------------------------------
     // OnDrag
@@ -117,15 +117,15 @@ public class CardDrag : MonoBehaviour
                 this.transform.position.z),
             new Vector3(posx, posy, this.transform.position.z),
         Time.deltaTime * 4);
-        if(flg_Recuction == true)
+        if(flg_Reduction　== true)
         {
             Transform tra = this.transform; // トランスフォーム情報を保存
             Vector3 tmp = tra.position;
-            if(tmp.y > 0.001f)
+            if (tmp.y > 0.001f)
                 transform.localScale -= new Vector3(0.0001f, 0.0001f, 0);
             else
             {
-                flg_Recuction = false;
+                flg_Reduction = false;
                 Card_Revival();
             }
         }
@@ -137,10 +137,10 @@ public class CardDrag : MonoBehaviour
     // --------------------------------------------------------------------------------
     void Card_Revival()
     {
-        Transform tra = GameObject.Find("Deck_Master").transform;
+        Transform tra = GameObject.Find("DeckMaster").transform;
         // デッキマスターの位置を取得
         Vector3 tmp = tra.position;
-        transform.position = new Vector3(tmp.x, tmp.y, 0);  // 位置を移動
+        transform.position = new Vector3(tmp.x, tmp.y, 0); // 位置を移動
         // 縮小されたサイズを元に戻す
         tmp = tra.localScale;
         transform.localScale = new Vector3(tmp.x, tmp.y, 0); // サイズを元に戻す

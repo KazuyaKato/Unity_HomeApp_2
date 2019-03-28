@@ -39,7 +39,6 @@ public class FieldCube : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Card_Count = " + Card_Count);
     }
 
     // --------------------------------------------------------------------------------

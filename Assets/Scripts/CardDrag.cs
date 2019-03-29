@@ -41,7 +41,6 @@ public class CardDrag : MonoBehaviour
         Text_SC.text = this.gameObject.GetComponentInChildren<Text>().text;
         pointerflg = true; // 持っている
         GMScript.Changeflg_CardBring(true); // 持ってますよフラグオン
-        Debug.Log("Down");
     }
 
     // --------------------------------------------------------------------------------
@@ -50,7 +49,6 @@ public class CardDrag : MonoBehaviour
     // --------------------------------------------------------------------------------
     public void PointerUp() // 手を離した時の処理。
     {
-        Debug.Log("PointerUp");
         GMScript.Changeflg_CardBring(false); // 持ってますよフラグoff
         if (colflg == false)
         {
@@ -120,9 +118,11 @@ public class CardDrag : MonoBehaviour
         if(flg_Reduction　== true)
         {
             Transform tra = this.transform; // トランスフォーム情報を保存
-            Vector3 tmp = tra.position;
-            if (tmp.y > 0.001f)
-                transform.localScale -= new Vector3(0.0001f, 0.0001f, 0);
+            Vector3 tmp = tra.localScale;
+            if (tmp.y > 0.1f)
+            {
+                transform.localScale -= new Vector3(0.02f, 0.02f, 0);
+            }
             else
             {
                 flg_Reduction = false;
@@ -137,7 +137,9 @@ public class CardDrag : MonoBehaviour
     // --------------------------------------------------------------------------------
     void Card_Revival()
     {
-        Transform tra = GameObject.Find("DeckMaster").transform;
+        GameObject obj = GameObject.Find("DeckMaster");
+        // Transform tra = GameObject.Find("DeckMaster").transform; // 親
+        Transform tra = obj.transform.Find("card").gameObject.transform;
         // デッキマスターの位置を取得
         Vector3 tmp = tra.position;
         transform.position = new Vector3(tmp.x, tmp.y, 0); // 位置を移動

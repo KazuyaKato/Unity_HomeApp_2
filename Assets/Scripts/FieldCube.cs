@@ -58,8 +58,8 @@ public class FieldCube : MonoBehaviour
             //            int i = int.Parse(collision.gameObject.name.Substring(5));
             //            blArray[i] = true;
             blArray[int.Parse(collision.gameObject.name.Substring(5))] = true;
-            Debug.Log("配列状態出力  0 = " + blArray[0] + "  1 = " + blArray[1] +
-                "  2 = " + blArray[2] + "  3 = " + blArray[3] + "  4 = " + blArray[4]);
+            //Debug.Log("配列状態出力  0 = " + blArray[0] + "  1 = " + blArray[1] +
+            //    "  2 = " + blArray[2] + "  3 = " + blArray[3] + "  4 = " + blArray[4]);
         }
     }
 

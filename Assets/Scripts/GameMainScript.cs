@@ -156,7 +156,6 @@ public class GameMainScript : MonoBehaviour {
         for (int i = 0;i < Array.Length;i++)
         {
             Card_queue.Enqueue(Array[i]); // シャッフルしたカードデータをデッキに格納
-            Debug.Log("Card_queue.count = " + Card_queue.Count);
         }
 
         for (int i = 0; i < Card_All_str.Length; i++)   // Card_All_strは画面のカード数。常に5
@@ -1211,7 +1210,6 @@ public class GameMainScript : MonoBehaviour {
             }
         }
 
-        Debug.Log("ColPos_Judge = false");
         return false;
     }
 
@@ -1304,6 +1302,8 @@ public class GameMainScript : MonoBehaviour {
                             if (strArray[i] == "正解" && son.name == "Hanamaru")
                             {
                                 son.GetComponent<Image>().enabled = true;
+                                CardDrag script = child.GetComponent<CardDrag>();
+                                script.flg_Reduction = true;
                                 // ここで縮小命令をかける
                                 break;
                             }

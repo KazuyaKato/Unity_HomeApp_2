@@ -1310,6 +1310,8 @@ public class GameMainScript : MonoBehaviour {
                                 son.GetComponent<Image>().enabled = true;
                                 Card_queue.Enqueue(Card_All_int[i]);
                                 Debug.Log("Card_queue.count_Wrong = " + Card_queue.Count);
+                                // デッキに戻る処理
+
                                 break;
                             }
                         }

@@ -15,7 +15,9 @@ public class CardDrag : MonoBehaviour
     bool colflg = false; // 衝突用フラグ
     bool pointerflg = false; // 持っているかどうかのフラグ
     public bool flg_Reduction = false; //  縮小フラグ
+    public bool flg_DeckBack = false;   // デッキに戻るフラグ
     Image Hanamaru;
+    Vector3 DeckMasterPos;  // デッキマスター座標
 
     // --------------------------------------------------------------------------------
     // OnDrag
@@ -106,6 +108,8 @@ public class CardDrag : MonoBehaviour
         GameMain = GameObject.Find("GameMain");
         GMScript = GameMain.GetComponent<GameMainScript>();
         Hanamaru = this.transform.Find("Hanamaru").GetComponent<Image>();
+        DeckMasterPos = GameObject.Find("DeckMaster").transform.Find("card").gameObject
+            .transform.position;
     }
 
     // Update is called once per frame
@@ -117,7 +121,8 @@ public class CardDrag : MonoBehaviour
                 this.transform.position.z),
             new Vector3(posx, posy, this.transform.position.z),
         Time.deltaTime * 4);
-        if(flg_Reduction　== true)
+
+        if (flg_Reduction　== true)  // カード縮小処理
         {
             Transform tra = this.transform; // トランスフォーム情報を保存
             Vector3 tmp = tra.localScale;
@@ -131,6 +136,22 @@ public class CardDrag : MonoBehaviour
                 Card_Revival();
             }
         }
+
+        // デッキに戻る処理
+        if (flg_DeckBack == true)
+        {
+            transform.position = Vector3.Lerp(new Vector3(
+            this.transform.position.x, this.transform.position.y,
+                this.transform.position.z),
+            new Vector3(DeckMasterPos.x, DeckMasterPos.y, this.transform.position.z),
+        Time.deltaTime * 4);
+            if (this.transform.position.y < DeckMasterPos.y + 0.1f)
+            {
+                flg_DeckBack = false;
+                Card_Revival();
+            }
+        }
+
     }
 
     // --------------------------------------------------------------------------------
@@ -140,7 +161,6 @@ public class CardDrag : MonoBehaviour
     void Card_Revival()
     {
         GameObject obj = GameObject.Find("DeckMaster");
-        // Transform tra = GameObject.Find("DeckMaster").transform; // 親
         Transform tra = obj.transform.Find("card").gameObject.transform;
         // デッキマスターの位置を取得
         Vector3 tmp = tra.position;

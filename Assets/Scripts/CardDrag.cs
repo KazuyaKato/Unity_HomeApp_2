@@ -152,14 +152,12 @@ public class CardDrag : MonoBehaviour
         // 花丸マークdisabled
         Hanamaru.enabled = false;
 
+        // 次の問題に表示を変える処理
+        GMScript.UpdateCard_All(int.Parse(this.name.Replace("card_", "")));
+
         // カードが元の位置に戻る処理
         colflg = false;
         pointerflg = false;
+
     }
-
-    // --------------------------------------------------------------------------------
-    // Card_MoveInitPos()
-    // カード元の位置戻る処理
-    // --------------------------------------------------------------------------------
-
 }

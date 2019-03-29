@@ -182,8 +182,6 @@ public class GameMainScript : MonoBehaviour {
      // 本当に埋める項目があるかの確認
     // ついでに入っている値の確認
         string[] tmp = new string[5];
-        int cnt = 0;
-        int cnt_empty = 0;
         for (int i = 0; i < Card_All_str.Length; i++)   // Card_All_strは画面のカード数。基本5
         {
             if ((Card_All_str[i] == ""))
@@ -1317,11 +1315,22 @@ public class GameMainScript : MonoBehaviour {
                         }
                     }
                 }
-
-
             }
         }
 
+    }
+    // --------------------------------------------------------------------------------
+    // UpdateCard_All()
+    // カード情報更新処理
+    // --------------------------------------------------------------------------------
+    public void UpdateCard_All(int _i)
+    {
+        int tmpi = Card_queue.Dequeue();
+        Card_All_str[_i] = NoTolsCode(tmpi);
+        Card_All_int[_i] = tmpi; // 番号を保存
+        Card_All_txt[_i] = NoToSentence(tmpi);
+
+        DrawScreen();
     }
 
 }

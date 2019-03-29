@@ -15,6 +15,7 @@ public class CardDrag : MonoBehaviour
     bool colflg = false; // 衝突用フラグ
     bool pointerflg = false; // 持っているかどうかのフラグ
     public bool flg_Reduction = false; //  縮小フラグ
+    Image Hanamaru;
 
     // --------------------------------------------------------------------------------
     // OnDrag
@@ -104,6 +105,7 @@ public class CardDrag : MonoBehaviour
         posy = this.transform.position.y;
         GameMain = GameObject.Find("GameMain");
         GMScript = GameMain.GetComponent<GameMainScript>();
+        Hanamaru = this.transform.Find("Hanamaru").GetComponent<Image>();
     }
 
     // Update is called once per frame
@@ -146,6 +148,13 @@ public class CardDrag : MonoBehaviour
         // 縮小されたサイズを元に戻す
         tmp = tra.localScale;
         transform.localScale = new Vector3(tmp.x, tmp.y, 0); // サイズを元に戻す
+
+        // 花丸マークdisabled
+        Hanamaru.enabled = false;
+
+        // カードが元の位置に戻る処理
+        colflg = false;
+        pointerflg = false;
     }
 
     // --------------------------------------------------------------------------------

@@ -1305,7 +1305,6 @@ public class GameMainScript : MonoBehaviour {
                                 CardDrag script = child.GetComponent<CardDrag>();
                                 // ここで縮小命令をかける
                                 script.flg_Reduction = true;
-                                flg_Put = false;
                                 break;
                             }
                             else if(strArray[i] == "不正解" && son.name == "Batu")
@@ -1321,7 +1320,7 @@ public class GameMainScript : MonoBehaviour {
                 }
             }
         }
-
+        flg_Put = false;    // カード置きフラグオフ
     }
     // --------------------------------------------------------------------------------
     // UpdateCard_All()

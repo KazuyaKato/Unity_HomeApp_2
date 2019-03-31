@@ -1228,6 +1228,8 @@ public class GameMainScript : MonoBehaviour {
     public void ButtonClick_JudgenChange()
     {
         flg_operate = false;    // ボタン操作フラグオフ
+        tForm.GetComponent<Canvas>().enabled = false;   // ボタン非表示
+        flg_JnC = false;    // ボタン表示フラグオフ
         // 載っているカードの枚数を取得するとして
         // どうやればそれができるのか。
         // それぞれのCardFieldに聞きにいくしかあるまい。
@@ -1301,15 +1303,15 @@ public class GameMainScript : MonoBehaviour {
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 CardDrag script = child.GetComponent<CardDrag>();
-                                script.flg_Reduction = true;
                                 // ここで縮小命令をかける
+                                script.flg_Reduction = true;
+                                flg_Put = false;
                                 break;
                             }
                             else if(strArray[i] == "不正解" && son.name == "Batu")
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 Card_queue.Enqueue(Card_All_int[i]);
-                                Debug.Log("Card_queue.count_Wrong = " + Card_queue.Count);
                                 // デッキに戻る処理
 
                                 break;

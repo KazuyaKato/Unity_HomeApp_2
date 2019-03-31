@@ -15,8 +15,9 @@ public class CardDrag : MonoBehaviour
     bool colflg = false; // 衝突用フラグ
     bool pointerflg = false; // 持っているかどうかのフラグ
     public bool flg_Reduction = false; //  縮小フラグ
-    public bool flg_DeckBack = false;   // デッキに戻るフラグ
-    Image Hanamaru;
+    private bool flg_DeckBack = false;   // デッキに戻るフラグ
+    Image Hanamaru; // 花丸マーク
+    Image Batu; // 罰マーク
     Vector3 DeckMasterPos;  // デッキマスター座標
 
     // --------------------------------------------------------------------------------
@@ -78,6 +79,16 @@ public class CardDrag : MonoBehaviour
     }
 
     // --------------------------------------------------------------------------------
+    // DeckBackFunc()
+    // 初期位置処理
+    // --------------------------------------------------------------------------------
+    public void DeckBackFunc()
+    {
+        flg_DeckBack = true;    // デッキにカードを戻す処理
+        GMScript.DeckMasterOverrideSorting(2);  // マスターデッキを浮かせる
+    }
+
+    // --------------------------------------------------------------------------------
     // OnTriggerExit2D
     // 衝突から離れた処理
     // --------------------------------------------------------------------------------
@@ -108,6 +119,7 @@ public class CardDrag : MonoBehaviour
         GameMain = GameObject.Find("GameMain");
         GMScript = GameMain.GetComponent<GameMainScript>();
         Hanamaru = this.transform.Find("Hanamaru").GetComponent<Image>();
+        Batu = this.transform.Find("Batu").GetComponent<Image>();
         DeckMasterPos = GameObject.Find("DeckMaster").transform.Find("card").gameObject
             .transform.position;
     }
@@ -148,6 +160,7 @@ public class CardDrag : MonoBehaviour
             if (this.transform.position.y < DeckMasterPos.y + 0.1f)
             {
                 flg_DeckBack = false;
+                GMScript.DeckMasterOverrideSorting(1);  // マスターデッキを落とす
                 Card_Revival();
             }
         }
@@ -169,8 +182,8 @@ public class CardDrag : MonoBehaviour
         tmp = tra.localScale;
         transform.localScale = new Vector3(tmp.x, tmp.y, 0); // サイズを元に戻す
 
-        // 花丸マークdisabled
-        Hanamaru.enabled = false;
+        Hanamaru.enabled = false; // 花丸マークdisabled
+        Batu.enabled = false; // 罰マークdisabled
 
         // 次の問題に表示を変える処理
         GMScript.UpdateCard_All(int.Parse(this.name.Replace("card_", "")));

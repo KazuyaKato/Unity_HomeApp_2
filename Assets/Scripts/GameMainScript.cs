@@ -49,7 +49,7 @@ public class GameMainScript : MonoBehaviour {
     GameObject CardField; // カードフィールド(場)
     public GameObject CorrectPanel; // 正解の花丸イメージ
     private GameObject tForm;
-
+    private Canvas DeckMasterCanvas;    // デッキマスターキャンバス
 
     Queue<int> Card_queue = new Queue<int>(); // カードデッキキュー
 
@@ -67,7 +67,7 @@ public class GameMainScript : MonoBehaviour {
         flg_JnC = false; // ボタン表示フラグをオフ
         Deck = GameObject.Find("Deck");
         CardField = GameObject.Find("CardField");
-
+        DeckMasterCanvas = GameObject.Find("DeckMaster").GetComponent<Canvas>();
 
         flg_CardBring = false;  // カード保持フラグ初期化
         flg_Put = false;        // カード置きフラグ初期化
@@ -1311,8 +1311,9 @@ public class GameMainScript : MonoBehaviour {
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 Card_queue.Enqueue(Card_All_int[i]);
+                                CardDrag script = child.GetComponent<CardDrag>();
                                 // デッキに戻る処理
-
+                                script.DeckBackFunc();
                                 break;
                             }
                         }
@@ -1336,4 +1337,12 @@ public class GameMainScript : MonoBehaviour {
         DrawScreen();
     }
 
+    // --------------------------------------------------------------------------------
+    // DeckMasterOverrideSorting()
+    // デッキプライオリティ管理
+    // --------------------------------------------------------------------------------
+    public void DeckMasterOverrideSorting(int _i)
+    {
+        DeckMasterCanvas.sortingOrder = _i;
+    }
 }

@@ -145,7 +145,10 @@ public class CardDrag : MonoBehaviour
             else
             {
                 flg_Reduction = false;
-                Card_Revival();
+                if (GMScript.DeckCountCheck() > 0)
+                    Card_Revival();
+                else
+                    this.gameObject.SetActive(false);
             }
         }
 

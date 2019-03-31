@@ -49,6 +49,7 @@ public class GameMainScript : MonoBehaviour {
     GameObject CardField; // カードフィールド(場)
     public GameObject CorrectPanel; // 正解の花丸イメージ
     private GameObject tForm;
+    private GameObject DeckMaster;
     private Canvas DeckMasterCanvas;    // デッキマスターキャンバス
 
     Queue<int> Card_queue = new Queue<int>(); // カードデッキキュー
@@ -57,6 +58,11 @@ public class GameMainScript : MonoBehaviour {
     bool flg_Put; // カード置きフラグ
     bool flg_JnC; // ボタン表示フラグ
     bool flg_operate;   // カード操作フラグ
+    bool flg_DeckMasterDisabled;    // デッキマスター非表示フラグ
+
+    // 設定　デッキの数
+    bool DeckLimit = true; // デッキリミット false時は無制限
+    int Decknum = 6; // デッキ数 DeckLimit = true時のみ参照
 
 
 
@@ -67,7 +73,9 @@ public class GameMainScript : MonoBehaviour {
         flg_JnC = false; // ボタン表示フラグをオフ
         Deck = GameObject.Find("Deck");
         CardField = GameObject.Find("CardField");
-        DeckMasterCanvas = GameObject.Find("DeckMaster").GetComponent<Canvas>();
+        DeckMaster = GameObject.Find("DeckMaster"); // デッキマスターをセット
+        flg_DeckMasterDisabled = false; // デッキマスター非表示フラグ
+        DeckMasterCanvas = DeckMaster.GetComponent<Canvas>();
 
         flg_CardBring = false;  // カード保持フラグ初期化
         flg_Put = false;        // カード置きフラグ初期化
@@ -140,7 +148,6 @@ public class GameMainScript : MonoBehaviour {
     // --------------------------------------------------------------------------------
     void StuckEmptyPlace()
     {
-
         // ここでキューに値を格納する
         // 番号のみでよい。基本番号で管理
         // csvデータをランダムにシャッフル
@@ -153,7 +160,13 @@ public class GameMainScript : MonoBehaviour {
 
         Array = Array.Shuffle();
 
-        for (int i = 0;i < Array.Length;i++)
+        int MaxLength;
+        if (DeckLimit == false)
+            MaxLength = Array.Length;
+        else
+            MaxLength = Decknum;
+
+        for (int i = 0;i < MaxLength;i++)
         {
             Card_queue.Enqueue(Array[i]); // シャッフルしたカードデータをデッキに格納
         }
@@ -188,8 +201,8 @@ public class GameMainScript : MonoBehaviour {
             {
                 if (Card_queue.Count > 0)
                 {
-                    int tmpi = Card_queue.Dequeue();
-                    Card_All_str[i] = NoTolsCode(tmpi);
+                    int tmpi = CardDequeue();
+                        Card_All_str[i] = NoTolsCode(tmpi);
                     Card_All_int[i] = tmpi; // 番号を保存
                     Card_All_txt[i] = NoToSentence(tmpi);
                 }
@@ -1129,7 +1142,7 @@ public class GameMainScript : MonoBehaviour {
         return "";
 	}
 
-	void OwnComInit(string work){
+    void OwnComInit(string work){
 //		ls = new List<strOwnCom>();
 		// my own commentデータ取得
 		if (work.Equals(""))
@@ -1143,13 +1156,27 @@ public class GameMainScript : MonoBehaviour {
 		}
 	}
 
-	// --------------------------------------------------------------------------------
-	// GetOwnComment
-	// 自己解説取得(03和音とコードネーム以外)
-	// 自己解説が登録されていれば解説を返す
-	// 自己解説が登録されていなければ""を返す
-	// --------------------------------------------------------------------------------
-	string GetOwnComment(int _ClassMode,int _Qnum){
+    // --------------------------------------------------------------------------------
+    // CardDequeue()
+    // --------------------------------------------------------------------------------
+    int CardDequeue()
+    {
+        int i = Card_queue.Dequeue();
+        if (Card_queue.Count == 0)
+        {   // デッキが0になったら
+            DeckMaster.SetActive(false);    // デッキマスター非表示
+            flg_DeckMasterDisabled = true;  // デッキマスター非表示フラグ
+        }
+        return i;
+    }
+
+    // --------------------------------------------------------------------------------
+    // GetOwnComment
+    // 自己解説取得(03和音とコードネーム以外)
+    // 自己解説が登録されていれば解説を返す
+    // 自己解説が登録されていなければ""を返す
+    // --------------------------------------------------------------------------------
+    string GetOwnComment(int _ClassMode,int _Qnum){
 		// コメントゲット
 /*		for (int i = 0; i < ls.Count; i++) {
 			if ((ls [i].ClassMode == _ClassMode) &&
@@ -1329,11 +1356,18 @@ public class GameMainScript : MonoBehaviour {
     // --------------------------------------------------------------------------------
     public void UpdateCard_All(int _i)
     {
-        int tmpi = Card_queue.Dequeue();
-        Card_All_str[_i] = NoTolsCode(tmpi);
-        Card_All_int[_i] = tmpi; // 番号を保存
-        Card_All_txt[_i] = NoToSentence(tmpi);
-
+        string str = "";
+        int i = 9;
+        string txt = "";
+        if (Card_queue.Count > 0)
+        { // デッキにカードがまだあれば
+            i = CardDequeue();
+            str = NoTolsCode(i);
+            txt = NoToSentence(i);
+        }
+        Card_All_str[_i] = str;
+        Card_All_int[_i] = i; // 番号を保存
+        Card_All_txt[_i] = txt;
         DrawScreen();
     }
 
@@ -1345,4 +1379,15 @@ public class GameMainScript : MonoBehaviour {
     {
         DeckMasterCanvas.sortingOrder = _i;
     }
+
+    // --------------------------------------------------------------------------------
+    // DeckCountCheck()
+    // デッキの残枚数確認
+    // --------------------------------------------------------------------------------
+    public int DeckCountCheck()
+    {
+        int i = Card_queue.Count;
+        return i;
+    }
+
 }

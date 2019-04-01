@@ -3312,6 +3312,7 @@ MonoBehaviour:
   Daikomoku_txt: {fileID: 0}
   Text_SC: {fileID: 1586171860}
   CorrectPanel: {fileID: 379154909}
+  PanelClear: {fileID: 1344510172}
 --- !u!4 &810903753
 Transform:
   m_ObjectHideFlags: 0
@@ -3882,7 +3883,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 873848541}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 810903752}
+        m_MethodName: RetryButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &873848541

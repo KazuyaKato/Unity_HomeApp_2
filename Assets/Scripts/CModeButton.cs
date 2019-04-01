@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 public class CModeButton : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+        Debug.Log(DateTime.Now.ToString("yyyy/MM/dd"));
 	}
 	
 	// Update is called once per frame
@@ -16,6 +17,7 @@ public class CModeButton : MonoBehaviour {
 	}
 
 	public void OnClick(){
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("GameMain");
         /*
 		GameObject obj = GameObject.Find ("SoundMaster");
 		if (obj != null) {
@@ -38,6 +40,6 @@ public class CModeButton : MonoBehaviour {
 		GameMainScript.stage = 0;
 		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("GameMain");
         */
-	}
+    }
 
 }

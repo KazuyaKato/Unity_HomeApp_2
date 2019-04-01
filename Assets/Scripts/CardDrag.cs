@@ -11,6 +11,7 @@ public class CardDrag : MonoBehaviour
 
     float posx;
     float posy;
+    int thisnamenum;    // 本オブジェクトの名前
 
     bool colflg = false; // 衝突用フラグ
     bool pointerflg = false; // 持っているかどうかのフラグ
@@ -122,6 +123,7 @@ public class CardDrag : MonoBehaviour
         Batu = this.transform.Find("Batu").GetComponent<Image>();
         DeckMasterPos = GameObject.Find("DeckMaster").transform.Find("card").gameObject
             .transform.position;
+        thisnamenum = int.Parse(this.name.Replace("card_", ""));
     }
 
     // Update is called once per frame
@@ -148,7 +150,10 @@ public class CardDrag : MonoBehaviour
                 if (GMScript.DeckCountCheck() > 0)
                     Card_Revival();
                 else
-                    this.gameObject.SetActive(false);
+                {
+                    this.gameObject.SetActive(false); // カード非表示にする
+                    GMScript.FieldCountCheck(thisnamenum);
+                }
             }
         }
 
@@ -189,7 +194,7 @@ public class CardDrag : MonoBehaviour
         Batu.enabled = false; // 罰マークdisabled
 
         // 次の問題に表示を変える処理
-        GMScript.UpdateCard_All(int.Parse(this.name.Replace("card_", "")));
+        GMScript.UpdateCard_All(thisnamenum);
 
         // カードが元の位置に戻る処理
         colflg = false;

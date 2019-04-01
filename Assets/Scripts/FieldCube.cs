@@ -28,12 +28,7 @@ public class FieldCube : MonoBehaviour
             }
         }
         blArray = new bool[cnt];
-        for(int i = 0; i < cnt; i++)
-        {
-            blArray[i] = false;
-        }
-        //---
-
+        Card_PutInit(); // カード情報初期化
     }
 
     // Update is called once per frame
@@ -93,4 +88,15 @@ public class FieldCube : MonoBehaviour
     {
         return blArray[_num];
     }
+
+    // --------------------------------------------------------------------------------
+    // Card_PutInit
+    // カードが置き情報の初期化
+    // --------------------------------------------------------------------------------
+    public void Card_PutInit()
+    {
+        for (int i = 0; i < blArray.Length; i++)
+            blArray[i] = false;
+    }
+
 }

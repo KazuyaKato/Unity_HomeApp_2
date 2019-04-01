@@ -42,12 +42,13 @@ public class GameMainScript : MonoBehaviour {
 
     // 管理データ
     string Daikomoku_str;
-    string[] Card_All_str = new string[5]; // 0=A 1=B 2=C 3=D 4=E
+    string[] Card_All_str = new string[5];
     int[] Card_All_int = new int[5]; // 0=A 1=B 2=C 3=D 4=E
 
     GameObject Deck; // カード５枚の親
     GameObject CardField; // カードフィールド(場)
     public GameObject CorrectPanel; // 正解の花丸イメージ
+    public GameObject PanelClear;   // クリアパネル
     private GameObject tForm;
     private GameObject DeckMaster;
     private Canvas DeckMasterCanvas;    // デッキマスターキャンバス
@@ -1291,10 +1292,18 @@ public class GameMainScript : MonoBehaviour {
                     {
                         if(script.Card_Put(i) == true)
                         {
-                            if (Card_All_str[i] == "JH")
-                                strArray[i] = "正解";
-                            else
-                                strArray[i] = "不正解";
+                            switch (Card_All_str[i])
+                            {
+                                case "":
+                                    strArray[i] = "-";
+                                    break;
+                                case "JH":
+                                    strArray[i] = "正解";
+                                    break;
+                                default:
+                                    strArray[i] = "不正解";
+                                    break;
+                            }
                         }
                     }
                 }
@@ -1305,10 +1314,18 @@ public class GameMainScript : MonoBehaviour {
                     {
                         if (script.Card_Put(i) == true)
                         {
-                            if (Card_All_str[i] == "MD")
-                                strArray[i] = "正解";
-                            else
-                                strArray[i] = "不正解";
+                            switch (Card_All_str[i])
+                            {
+                                case "":
+                                    strArray[i] = "-";
+                                    break;
+                                case "MD":
+                                    strArray[i] = "正解";
+                                break;
+                                default:
+                                    strArray[i] = "不正解";
+                                break;
+                            }
                         }
                     }
                 }
@@ -1368,7 +1385,22 @@ public class GameMainScript : MonoBehaviour {
         Card_All_str[_i] = str;
         Card_All_int[_i] = i; // 番号を保存
         Card_All_txt[_i] = txt;
-        DrawScreen();
+
+        // カード終了チェック処理
+        int j;
+        for (j = 0; j < Card_All_str.Length;j++)
+        {
+            if (Card_All_str[j] != "")
+                break;
+        }
+
+        if(j < Card_All_str.Length)
+            DrawScreen();
+        else
+        {   // パネルを表示
+            PanelClear.SetActive(true);
+        }
+
     }
 
     // --------------------------------------------------------------------------------
@@ -1388,6 +1420,21 @@ public class GameMainScript : MonoBehaviour {
     {
         int i = Card_queue.Count;
         return i;
+    }
+
+    // --------------------------------------------------------------------------------
+    // FieldCountCheck()
+    // フィールドのカードの残枚数確認
+    // --------------------------------------------------------------------------------
+    public void FieldCountCheck(int _i)
+    {
+        Card_All_str[_i] = "";  // 該当を空にする
+        for(int i = 0;i < Card_All_str.Length; i++)
+        {
+            if (Card_All_str[i] != "")
+                return;
+        }
+        PanelClear.SetActive(true);
     }
 
 }

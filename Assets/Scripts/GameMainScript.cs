@@ -39,6 +39,7 @@ public class GameMainScript : MonoBehaviour {
     public Text Daikomoku_txt;
     public Text Text_SC;    // 詳細欄
     string[] Card_All_txt = new string[5]; // 0=A 1=B 2=C 3=D 4=E
+    string[] strArray;  // 置かれたオブジェクト名を保持するArray
 
     // 管理データ
     string Daikomoku_str;
@@ -807,7 +808,6 @@ public class GameMainScript : MonoBehaviour {
         int cnt = 0;
 
         // 正解・不正解判定
-        string[] strArray;  // 置かれたオブジェクト名を保持するArray
         cnt = 0; // カウント用
         foreach(Transform child in Deck.transform)
         {
@@ -890,8 +890,6 @@ public class GameMainScript : MonoBehaviour {
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 CardDrag script = child.GetComponent<CardDrag>();
-                                // ここで縮小命令をかける
-//debug                                script.flg_Reduction = true;
                                 break;
                             }
                             else if(strArray[i] == "不正解" && son.name == "Batu") // バツの表示
@@ -899,8 +897,6 @@ public class GameMainScript : MonoBehaviour {
                                 son.GetComponent<Image>().enabled = true;
                                 Card_queue.Enqueue(Card_All_int[i]);
                                 CardDrag script = child.GetComponent<CardDrag>();
-                                // デッキに戻る処理
-//debug                                script.DeckBackFunc();
                                 break;
                             }
                         }
@@ -911,6 +907,42 @@ public class GameMainScript : MonoBehaviour {
         NextButtonCanvas.enabled = true;    // NextCardボタン表示
         flg_Put = false;    // カード置きフラグオフ
     }
+
+    // --------------------------------------------------------------------------------
+    // NextCardButton_OnClick()
+    // 次のカードボタン押下処理
+    // --------------------------------------------------------------------------------
+    public void NextCardButton_OnClick()
+    {
+        for (int i = 0; i < strArray.Length; i++)
+        {
+            if (strArray[i] == "正解" || strArray[i] == "不正解")
+            {
+                foreach (Transform child in Deck.transform)
+                {
+                    if (child.name == "card_" + i)
+                    {
+                        if (strArray[i] == "正解")
+                        {
+                            CardDrag script = child.GetComponent<CardDrag>();
+                            // ここで縮小命令をかける
+                            script.flg_Reduction = true;
+                            break;
+                         }
+                        else if (strArray[i] == "不正解")
+                        {
+                            CardDrag script = child.GetComponent<CardDrag>();
+                            // デッキに戻る処理
+                                script.DeckBackFunc();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        NextButtonCanvas.enabled = false;    // NextCardボタン非表示
+    }
+
     // --------------------------------------------------------------------------------
     // UpdateCard_All()
     // カード情報更新処理

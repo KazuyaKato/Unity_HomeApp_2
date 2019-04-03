@@ -39,6 +39,7 @@ public class GameMainScript : MonoBehaviour {
     public Text Daikomoku_txt;
     public Text Text_SC;    // 詳細欄
     string[] Card_All_txt = new string[5]; // 0=A 1=B 2=C 3=D 4=E
+    string[] strArray;  // 置かれたオブジェクト名を保持するArray
 
     // 管理データ
     string Daikomoku_str;
@@ -52,6 +53,7 @@ public class GameMainScript : MonoBehaviour {
     private GameObject tForm;
     private GameObject DeckMaster;
     private Canvas DeckMasterCanvas;    // デッキマスターキャンバス
+    private Canvas NextButtonCanvas;    // NextCardボタン
 
     Queue<int> Card_queue = new Queue<int>(); // カードデッキキュー
 
@@ -77,6 +79,7 @@ public class GameMainScript : MonoBehaviour {
         DeckMaster = GameObject.Find("DeckMaster"); // デッキマスターをセット
         flg_DeckMasterDisabled = false; // デッキマスター非表示フラグ
         DeckMasterCanvas = DeckMaster.GetComponent<Canvas>();
+        NextButtonCanvas = GameObject.Find("NextButtonCanvas").GetComponent<Canvas>();
 
         flg_CardBring = false;  // カード保持フラグ初期化
         flg_Put = false;        // カード置きフラグ初期化
@@ -436,147 +439,6 @@ public class GameMainScript : MonoBehaviour {
         SetCSVData_Dai();   // 新たな問題描画処理
     }
 
-    // --------------------------------------------------------------------------------
-    // QuestDisplay
-    // ゲームメイン画面において、問題を表示する処理
-    // --------------------------------------------------------------------------------
-    void QuestDisplay(){
-        /*
-		if (QuestCnt < 1)
-			return;
-		GameObject obj = GameObject.Find ("QuesText");
-
-		// テキストコンポーネントを取得
-		UnityEngine.UI.Text textComponent = obj.GetComponent<UnityEngine.UI.Text>();
-
-		//CSVデータ取得
-		CSVReaderScript CSVr = GetComponent<CSVReaderScript>();
-
-		// 乱数を求め、表示する問題を決める
-		int idx = (int)(UnityEngine.Random.value * 99999) % QuestCnt;
-
-		// Debug
-/*		idx = dbgnum;
-		Debug.Log (idx);
-		dbgnum = dbgnum + 1;
-*/		//
-/*
-		// for Review
-		QuesNo = CSVr.arr[idx].No;
-
-		// テキストを描画
-		textComponent.text = CSVr.arr[idx].Q; // 問題を描画
-		InstCls = CSVr.arr[idx].A;
-
-		// 選択肢を描画
-		string[] Array = new string[4];
-		Array [0] = InstCls;
-		string work;
-		GameObject objfls = GameObject.Find ("ToneScaleCanvas");
-		switch (mode) {
-
-		case 0:	// 01学習指導要領
-			obj = GameObject.Find ("ScrollCanvas");
-			objfls = GameObject.Find ("ToneScaleCanvas");
-			Array [1] = CSVr.arr [idx].W1;
-			Array [2] = CSVr.arr [idx].W2;
-			Array [3] = CSVr.arr [idx].W3;
-			break;
-
-		case 1:	// 02調・音階
-			obj = GameObject.Find ("ScrollCanvas");
-			objfls = GameObject.Find ("ToneScaleCanvas");
-			for (int i = 1; i < 4; ++i) {
-				while (true) {
-					if (CSVr.arr [idx].W1.Equals ("Ａ")) {
-						work = CSVr.wrg01A [(int)(UnityEngine.Random.value * 99999) % CSVr.wrg01A.Count].Chose;
-					} else {
-						work = CSVr.wrg01B [(int)(UnityEngine.Random.value * 99999) % CSVr.wrg01B.Count].Chose;
-					}
-					int j;
-					for (j = 0; j < i; ++j) {
-						if (Array [j] == work)
-							break;
-					}
-					if (j < i)	// すでに同じ選択肢が格納されていた場合検索処理をやり直す
-					continue;
-					Array [i] = work;
-					break;
-				}
-			}
-			break;
-
-		case 2:	// 03曲名と作曲者
-			obj = GameObject.Find ("ScrollCanvas");
-			objfls = GameObject.Find ("ToneScaleCanvas");
-			for (int i = 1; i < 4; ++i) {
-				while (true) {
-					int chki = (int)(UnityEngine.Random.value * 99999) % CSVr.arr.Count;
-					if (CSVr.arr [idx].W1 != CSVr.arr [chki].W1) {
-						continue;
-					}
-					work = CSVr.arr [chki].A;
-					int j;
-					for (j = 0; j < i; ++j) {
-						if (Array [j] == work)
-							break;
-					}
-					if (j < i)	// すでに同じ選択肢が格納されていた場合検索処理をやり直す
-						continue;
-					Array [i] = work;
-					break;
-				}
-			}
-			break;
-
-		case 3: // 04 和音とコードネーム
-			return;
-
-		default:
-			break;
-		}
-		obj.GetComponent<Canvas> ().enabled = true;	// 和音とコードネーム用canvasを表示
-		objfls.GetComponent<Canvas>().enabled = false;
-
-
-		InstCom = CSVr.arr [idx].D;
-
-		// 解説編集時のため解説編集枠に解説を表示
-		work = GetOwnComment (mode, QuesNo);
-
-		// 解説登録にも表示（変更用）
-		obj = GameObject.Find ("InputField");
-		InputField IEComponent = obj.GetComponent<InputField> ();
-		IEComponent.text = work;	// InputFieldに解説を表示
-
-		// 選択肢をランダムに並び替え
-		System.Random rng = new System.Random();
-		int n = Array.Length;
-		while (n > 1) {
-			n--;
-			int k = rng.Next (n + 1);
-			string tmp = Array [k];
-			Array [k] = Array [n];
-			Array [n] = tmp;
-		}
-
-		// 選択肢を選択肢内に格納
-		n = 0;
-		foreach (Transform child in ChooseButton.transform) {
-			SetAlteText (child.GetComponent<Button> (), Array [n]);
-			++n;
-		}
-
-		string workQ = CSVr.arr [idx].Q;	// 問題をワークに格納
-		SentenceDisp(InstCls,work,workQ);	// 問題を表示
-		//
-
-		// スクロールバーをトップへ
-		// Change the current vertical scroll position.
-		myScrollRect.verticalNormalizedPosition = 1f;
-        */
-	}
-
 	// ボタンへの問題描画
 	void SetAlteText(Button btn,string ary){
 		Text textComponent = btn.gameObject.transform.Find ("Text").gameObject.GetComponent<Text> ();
@@ -603,67 +465,6 @@ public class GameMainScript : MonoBehaviour {
 	void GetOwnCom(){
 	}
 
-	// ボタン押下時処理
-	public void ButtonAct(bool Judge){	// true 正解  false 不正解
-        /*
-		GameObject obj;
-
-		// for Review
-		string iques = mode + "," + QuesNo.ToString("D3") + ",";
-
-		if (Judge) { // 正解
-			obj = GameObject.Find ("SoundMaster");
-			if (obj != null) {
-				SoundMaster script = obj.GetComponent<SoundMaster> ();
-				script.PlaySECrctSnd ();
-			}
-
-			var objcor = Instantiate (CorrectPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
-			objcor.name = "CorrectSign";
-			obj = GameObject.Find ("ChooseButton");
-			foreach (Transform child in obj.transform) {
-				child.GetComponent<Button>().interactable = false;
-			}
-
-			// for Review
-			if(!alcorrect.Contains(iques))
-				alcorrect.Add (iques);
-
-			// 連続カウント+1
-			Con_Count(true);
-
-			Invoke ("CorrectNext", 1.5f);
-
-		} else { // 不正解
-			string strJuke;
-			if ((mode.Equals(2)) &&
-				((strJuke = jukebox.Music_load(QuesNo)) != "")) { // 不正解時曲を再生
-				JukeClip = Resources.Load<AudioClip> (strJuke);
-				audiosource.clip = JukeClip;
-				audiosource.Play ();
-			} else {	// 不正解ブザー音再生
-				obj = GameObject.Find ("SoundMaster");
-				if (obj != null) {
-					SoundMaster script = obj.GetComponent<SoundMaster> ();
-					script.PlaySEWrng ();
-				}
-			}
-			string OwnCom = GetOwnComment (mode, QuesNo);
-			SentenceDisp (InstCls, OwnCom, InstCom);
-
-			obj = GameObject.Find ("MissCanvas");
-			obj.GetComponent<Canvas> ().enabled = true;
-
-			// for Review
-			if(!almiss.Contains(iques))
-				almiss.Add (iques);
-
-			// 連続カウント初期化
-			Con_Count(false);
-		}
-        */
-	}
-
 	// 連続カウント処理
 	public void Con_Count(bool _res){
         /*
@@ -684,21 +485,6 @@ public class GameMainScript : MonoBehaviour {
 		GameObject obj = GameObject.Find ("InstText");
 		UnityEngine.UI.Text textComponent = obj.GetComponent<UnityEngine.UI.Text> ();
 		textComponent.text = work;
-	}
-
-	// SEを止めて次の処理
-	public void NextQues(){
-		if(audiosource != null)
-			audiosource.Stop ();
-		Common.btnsnd ();
-		NextQuesTo ();
-	}
-
-	// 問題解説をcloseし、次の問題へ移行
-	void NextQuesTo(){
-		GameObject obj = GameObject.Find ("MissCanvas");
-		obj.GetComponent<Canvas> ().enabled = false;
-		QuestDisplay(); // 次の問題へ移行
 	}
 
 	// 次の問題チェック
@@ -1022,7 +808,6 @@ public class GameMainScript : MonoBehaviour {
         int cnt = 0;
 
         // 正解・不正解判定
-        string[] strArray;  // 置かれたオブジェクト名を保持するArray
         cnt = 0; // カウント用
         foreach(Transform child in Deck.transform)
         {
@@ -1090,7 +875,6 @@ public class GameMainScript : MonoBehaviour {
 
             }
         }
-        // 花丸の表示
         for (int i = 0; i < cnt; i++)
         {
             if(strArray[i] == "正解" || strArray[i] == "不正解")
@@ -1101,21 +885,18 @@ public class GameMainScript : MonoBehaviour {
                     {
                         foreach(Transform son in child.transform)
                         {
-                            if (strArray[i] == "正解" && son.name == "Hanamaru")
+                            if (strArray[i] == "正解" && son.name == "Hanamaru") // 花丸の表示
+
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 CardDrag script = child.GetComponent<CardDrag>();
-                                // ここで縮小命令をかける
-                                script.flg_Reduction = true;
                                 break;
                             }
-                            else if(strArray[i] == "不正解" && son.name == "Batu")
+                            else if(strArray[i] == "不正解" && son.name == "Batu") // バツの表示
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 Card_queue.Enqueue(Card_All_int[i]);
                                 CardDrag script = child.GetComponent<CardDrag>();
-                                // デッキに戻る処理
-                                script.DeckBackFunc();
                                 break;
                             }
                         }
@@ -1123,8 +904,45 @@ public class GameMainScript : MonoBehaviour {
                 }
             }
         }
+        NextButtonCanvas.enabled = true;    // NextCardボタン表示
         flg_Put = false;    // カード置きフラグオフ
     }
+
+    // --------------------------------------------------------------------------------
+    // NextCardButton_OnClick()
+    // 次のカードボタン押下処理
+    // --------------------------------------------------------------------------------
+    public void NextCardButton_OnClick()
+    {
+        for (int i = 0; i < strArray.Length; i++)
+        {
+            if (strArray[i] == "正解" || strArray[i] == "不正解")
+            {
+                foreach (Transform child in Deck.transform)
+                {
+                    if (child.name == "card_" + i)
+                    {
+                        if (strArray[i] == "正解")
+                        {
+                            CardDrag script = child.GetComponent<CardDrag>();
+                            // ここで縮小命令をかける
+                            script.flg_Reduction = true;
+                            break;
+                         }
+                        else if (strArray[i] == "不正解")
+                        {
+                            CardDrag script = child.GetComponent<CardDrag>();
+                            // デッキに戻る処理
+                                script.DeckBackFunc();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        NextButtonCanvas.enabled = false;    // NextCardボタン非表示
+    }
+
     // --------------------------------------------------------------------------------
     // UpdateCard_All()
     // カード情報更新処理

@@ -16,6 +16,7 @@ public class CardDrag : MonoBehaviour
     bool colflg = false; // 衝突用フラグ
     bool pointerflg = false; // 持っているかどうかのフラグ
     public bool flg_Reduction = false; //  縮小フラグ
+    public bool flg_EnableMove = true;  // カード操作可能フラグ
     private bool flg_DeckBack = false;   // デッキに戻るフラグ
     Image Hanamaru; // 花丸マーク
     Image Batu; // 罰マーク
@@ -27,13 +28,16 @@ public class CardDrag : MonoBehaviour
     // --------------------------------------------------------------------------------
     public void OnDrag() // ドラッグ処理
     {
-        Vector3 TapPos = Input.mousePosition;
-        TapPos.z = 10f;
-        transform.position = Camera.main.ScreenToWorldPoint(TapPos);
-        if(pointerflg == false)
+        if(flg_EnableMove == true)  // フラグ操作可能時
         {
-            GMScript.Changeflg_CardBring(true);
-            pointerflg = true;
+            Vector3 TapPos = Input.mousePosition;
+            TapPos.z = 10f;
+            transform.position = Camera.main.ScreenToWorldPoint(TapPos);
+            if(pointerflg == false)
+            {
+                GMScript.Changeflg_CardBring(true);
+                pointerflg = true;
+            }
         }
     }
 
@@ -199,6 +203,7 @@ public class CardDrag : MonoBehaviour
         // カードが元の位置に戻る処理
         colflg = false;
         pointerflg = false;
+        flg_EnableMove = true;  // 操作フラグ許可
 
     }
 }

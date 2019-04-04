@@ -883,20 +883,21 @@ public class GameMainScript : MonoBehaviour {
                 {
                     if(child.name == "card_" + i)
                     {
+                        // カード操作不能にする
+                        CardDrag script = child.GetComponent<CardDrag>();
+                        script.flg_EnableMove = false;
                         foreach(Transform son in child.transform)
                         {
                             if (strArray[i] == "正解" && son.name == "Hanamaru") // 花丸の表示
 
                             {
                                 son.GetComponent<Image>().enabled = true;
-                                CardDrag script = child.GetComponent<CardDrag>();
                                 break;
                             }
                             else if(strArray[i] == "不正解" && son.name == "Batu") // バツの表示
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 Card_queue.Enqueue(Card_All_int[i]);
-                                CardDrag script = child.GetComponent<CardDrag>();
                                 break;
                             }
                         }

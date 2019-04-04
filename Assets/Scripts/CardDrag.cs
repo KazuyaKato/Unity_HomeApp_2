@@ -138,7 +138,7 @@ public class CardDrag : MonoBehaviour
             this.transform.position.x,this.transform.position.y, 
                 this.transform.position.z),
             new Vector3(posx, posy, this.transform.position.z),
-        Time.deltaTime * 4);
+        Time.deltaTime * 8);
 
         if (flg_Reduction　== true)  // カード縮小処理
         {
@@ -146,7 +146,7 @@ public class CardDrag : MonoBehaviour
             Vector3 tmp = tra.localScale;
             if (tmp.y > 0.1f)
             {
-                transform.localScale -= new Vector3(0.02f, 0.02f, 0);
+                transform.localScale -= new Vector3(0.04f, 0.04f, 0);   // 縮小スピード
             }
             else
             {

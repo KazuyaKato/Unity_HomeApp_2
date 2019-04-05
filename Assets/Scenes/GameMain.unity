@@ -3421,6 +3421,7 @@ MonoBehaviour:
   Text_SC: {fileID: 1586171860}
   GameMain: {fileID: 0}
   flg_Reduction: 0
+  flg_EnableMove: 1
 --- !u!114 &805894062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7498,6 +7499,7 @@ MonoBehaviour:
   Text_SC: {fileID: 1586171860}
   GameMain: {fileID: 0}
   flg_Reduction: 0
+  flg_EnableMove: 1
 --- !u!114 &1663855439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7990,6 +7992,7 @@ MonoBehaviour:
   Text_SC: {fileID: 1586171860}
   GameMain: {fileID: 0}
   flg_Reduction: 0
+  flg_EnableMove: 1
 --- !u!114 &1771905604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8252,6 +8255,7 @@ MonoBehaviour:
   Text_SC: {fileID: 1586171860}
   GameMain: {fileID: 0}
   flg_Reduction: 0
+  flg_EnableMove: 1
 --- !u!114 &1781090261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8647,6 +8651,7 @@ MonoBehaviour:
   Text_SC: {fileID: 1586171860}
   GameMain: {fileID: 0}
   flg_Reduction: 0
+  flg_EnableMove: 1
 --- !u!114 &1827207356
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -321,6 +321,7 @@ public class GameMainScript : MonoBehaviour {
 
         // 詳細の箇所は空欄にする。
         Text_SC.text = "";
+        strDisplayNow = ""; // 表示用も空にする
     }
 
     // --------------------------------------------------------------------------------

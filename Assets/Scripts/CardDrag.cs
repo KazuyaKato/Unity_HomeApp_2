@@ -18,6 +18,11 @@ public class CardDrag : MonoBehaviour
     public bool flg_Reduction = false; //  縮小フラグ
     public bool flg_EnableMove = true;  // カード操作可能フラグ
     private bool flg_DeckBack = false;   // デッキに戻るフラグ
+
+    // help機能用
+    public bool flg_Help = false;   // ヘルプ機能のonoff
+    public string str_Help = "";    // ヘルプ内容
+
     Image Hanamaru; // 花丸マーク
     Image Batu; // 罰マーク
     Vector3 DeckMasterPos;  // デッキマスター座標
@@ -47,7 +52,11 @@ public class CardDrag : MonoBehaviour
     // -------------------------------------------------------------------------
     public void PointerDown()   // 振れた時の処理。詳細欄に内容が表示される
     {
-        Text_SC.text = this.gameObject.GetComponentInChildren<Text>().text;
+        if (flg_Help == false)  // ヘルプフラグチェック
+            Text_SC.text = this.gameObject.GetComponentInChildren<Text>().text;
+        else
+            Text_SC.text = str_Help;    // ヘルプを表示
+
         pointerflg = true; // 持っている
         GMScript.Changeflg_CardBring(true); // 持ってますよフラグオン
         GMScript.strDisplayNow = this.gameObject.name;  // 本オブジェクトの名前
@@ -197,6 +206,7 @@ public class CardDrag : MonoBehaviour
 
         Hanamaru.enabled = false; // 花丸マークdisabled
         Batu.enabled = false; // 罰マークdisabled
+        flg_Help = false;   // ヘルプフラグ初期化
 
         // 次の問題に表示を変える処理
         GMScript.UpdateCard_All(thisnamenum);

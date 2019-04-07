@@ -67,7 +67,7 @@ public class GameMainScript : MonoBehaviour {
     bool DeckLimit = false; // デッキリミット false時は無制限
     int Decknum = 6; // デッキ数 DeckLimit = true時のみ参照
 
-
+    public string strDisplayNow;   // 表示中を格納管理
 
     // Use this for initialization
     void Start () {
@@ -80,6 +80,7 @@ public class GameMainScript : MonoBehaviour {
         flg_DeckMasterDisabled = false; // デッキマスター非表示フラグ
         DeckMasterCanvas = DeckMaster.GetComponent<Canvas>();
         NextButtonCanvas = GameObject.Find("NextButtonCanvas").GetComponent<Canvas>();
+        strDisplayNow = ""; // 表示中間利用初期化
 
         flg_CardBring = false;  // カード保持フラグ初期化
         flg_Put = false;        // カード置きフラグ初期化
@@ -1020,6 +1021,6 @@ public class GameMainScript : MonoBehaviour {
     // --------------------------------------------------------------------------------
     public void OnClick_Help()
     {
-
+        Debug.Log(strDisplayNow);
     }
 }

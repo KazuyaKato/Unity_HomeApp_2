@@ -13,12 +13,15 @@ public class GameMainScript : MonoBehaviour {
 		public string lsCode;	// No or Chord
 		public string lsSentence;
         public int lsLevel; // レベル用 Shoのみ
+        public string lsHelp;   // ヘルプ用
 
-		public Komoku_lst(int No, string lsCode, string lsSentence,int lsLevel){
+		public Komoku_lst(int No, string lsCode, string lsSentence,int lsLevel,
+        string lsHelp){
 			this.No = No;
 			this.lsCode = lsCode;
 			this.lsSentence = lsSentence;
             this.lsLevel = lsLevel;
+            this.lsHelp = lsHelp;
 		}
 	}
 
@@ -45,6 +48,8 @@ public class GameMainScript : MonoBehaviour {
     string Daikomoku_str;
     string[] Card_All_str = new string[5];
     int[] Card_All_int = new int[5]; // 0=A 1=B 2=C 3=D 4=E
+    bool[] Card_All_help = new bool[5]; // ヘルプボタン押されたか判定
+    string[] Card_All_strHelp = new string[5];  // ヘルプ用テキストデータ
 
     GameObject Deck; // カード５枚の親
     GameObject CardField; // カードフィールド(場)
@@ -79,7 +84,8 @@ public class GameMainScript : MonoBehaviour {
         DeckMaster = GameObject.Find("DeckMaster"); // デッキマスターをセット
         flg_DeckMasterDisabled = false; // デッキマスター非表示フラグ
         DeckMasterCanvas = DeckMaster.GetComponent<Canvas>();
-        NextButtonCanvas = GameObject.Find("NextButtonCanvas").GetComponent<Canvas>();
+        NextButtonCanvas = 
+        GameObject.Find("NextButtonCanvas").GetComponent<Canvas>();
         strDisplayNow = ""; // 表示中間利用初期化
 
         flg_CardBring = false;  // カード保持フラグ初期化
@@ -92,6 +98,8 @@ public class GameMainScript : MonoBehaviour {
         for(int i = 0;i < Card_All_str.Length; i++)
         {
             Card_All_str[i] = "";   // カードデータ初期化
+            Card_All_help[i] = false;  // カードヘルプ初期化
+            Card_All_strHelp[i] = "";   // カードヘルプテキスト初期化
         }
 
         // 大項目、小項目をcsvより読み込み、それぞれリストに格納する。
@@ -102,10 +110,10 @@ public class GameMainScript : MonoBehaviour {
 
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // readCSV
     // CSVを読み込む
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     void readCSV(int _komoku)
     {
         TextAsset csv = null;
@@ -130,14 +138,19 @@ public class GameMainScript : MonoBehaviour {
             {
                 break;
             }
+            int lslevel = int.Parse(words[2]);
+            if (lslevel > 1)
+                continue;
 
             switch (_komoku)
             {
                 case 1: // 1 = 大項目
-                    ls_Daimon.Add(new Komoku_lst(int.Parse(words[0]), words[1], words[2],0));
+                    ls_Daimon.Add(new Komoku_lst(int.Parse(words[0]), words[1],
+                        words[2], 0,""));
                     break;
                 case 2: // 2 = 小項目
-                    ls_Shomon.Add(new Komoku_lst(int.Parse(words[0]), words[1], words[3],int.Parse(words[2])));
+                    ls_Shomon.Add(new Komoku_lst(int.Parse(words[0]), words[1],
+                        words[3], int.Parse(words[2]),words[4]));
                     break;
                 default:
                     Debug.Log("Error_02");
@@ -146,17 +159,16 @@ public class GameMainScript : MonoBehaviour {
         }
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // StuckEmptyPlace
     // Startからのみくる初期処理
     // 空の箇所に問題を格納
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     void StuckEmptyPlace()
     {
         // ここでキューに値を格納する
         // 番号のみでよい。基本番号で管理
         // csvデータをランダムにシャッフル
-        //        ls_Shomon.Shuffle(); // ls_Shomonをシャッフルしている　大元だしシャッフルしたくない
         int[] Array = new int[ls_Shomon.Count]; // シャッフル用の一時配列
         for(int i = 0;i < ls_Shomon.Count; i++) // シャッフル用配列に値を格納
         {
@@ -175,16 +187,15 @@ public class GameMainScript : MonoBehaviour {
         {
             Card_queue.Enqueue(Array[i]); // シャッフルしたカードデータをデッキに格納
         }
-
-        for (int i = 0; i < Card_All_str.Length; i++)   // Card_All_strは画面のカード数。常に5
-        {
+        // Card_All_strは画面のカード数。常に5
+        for (int i = 0; i < Card_All_str.Length; i++){
             if (Card_All_str[i] == "") {
                 SetCSVData_Sho();  // 小項目に空があった場合
             }
         }
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // SetCSVData_Sho
     // CSVをセットするデータ
     // 小項目において
@@ -192,7 +203,7 @@ public class GameMainScript : MonoBehaviour {
     // 空項目を埋める。
     // 小項目の空が複数存在していれば
     // 可能な限り全てに格納するものとする。
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     void SetCSVData_Sho()
     {
 
@@ -200,25 +211,26 @@ public class GameMainScript : MonoBehaviour {
      // 本当に埋める項目があるかの確認
     // ついでに入っている値の確認
         string[] tmp = new string[5];
-        for (int i = 0; i < Card_All_str.Length; i++)   // Card_All_strは画面のカード数。基本5
-        {
+        // Card_All_strは画面のカード数。基本5
+        for (int i = 0; i < Card_All_str.Length; i++){
             if ((Card_All_str[i] == ""))
             {
                 if (Card_queue.Count > 0)
                 {
                     int tmpi = CardDequeue();
-                        Card_All_str[i] = NoTolsCode(tmpi);
+                        Card_All_str[i] = NoTolsCode(tmpi); // 正解コード
                     Card_All_int[i] = tmpi; // 番号を保存
                     Card_All_txt[i] = NoToSentence(tmpi);
+                    Card_All_strHelp[i] = NoToHelpSentence(tmpi);
                 }
             }
         }
             DrawScreen();
     }
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // NoTolsCode(int _no)
     // Noより問題文を取得する
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public string NoTolsCode(int _no)
     {
         string str = "";
@@ -234,10 +246,10 @@ public class GameMainScript : MonoBehaviour {
         return str;
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // NoToSentence(int _no)
     // Noより問題文を取得する
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public string NoToSentence(int _no)
     {
         string str = "";
@@ -253,22 +265,41 @@ public class GameMainScript : MonoBehaviour {
         return str;
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // NoToHelpSentence(int _no)
+    // Noよりヘルプ文を取得する
+    // -------------------------------------------------------------------------
+    public string NoToHelpSentence(int _no)
+    {
+        string str = "";
+        for (int i = 0; i < ls_Shomon.Count; i++) // シャッフル用配列に値を格納
+        {
+            if (_no == ls_Shomon[i].No)
+            {
+                str = ls_Shomon[i].lsHelp;
+                break;
+            }
+
+        }
+        return str;
+    }
+
+    // -------------------------------------------------------------------------
     // DebugChanged
     // DebugToggleに変化があったらここを改修する
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public void DebugChanged()
     {
         DrawScreen();
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // SetCSVData_Dai
     // CSVをセットするデータ
     // 大項目において
     // 空である項目をサーチし
     // 空項目を埋める。
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     void SetCSVData_Dai()
     {
@@ -277,11 +308,13 @@ public class GameMainScript : MonoBehaviour {
         if (Daikomoku_str == "")
         {
             // 小項目より一つ選択
-            int idx = (int)(UnityEngine.Random.value * 99999) % Card_All_str.Length;
+            int idx = (int)(UnityEngine.Random.value * 99999) % 
+            Card_All_str.Length;
             string CorrectSign = Card_All_str[idx];
             while (CorrectSign == "")
             {
-                idx = (int)(UnityEngine.Random.value * 99999) % Card_All_str.Length;
+                idx = (int)(UnityEngine.Random.value * 99999) % 
+                Card_All_str.Length;
                 CorrectSign = Card_All_str[idx];
             }
 
@@ -293,7 +326,8 @@ public class GameMainScript : MonoBehaviour {
                     // 大項目に問題を格納
                     Daikomoku_str = ls_Daimon[i].lsCode;
                     if (DebugFlg.isOn == true)
-                        Daikomoku_txt.text = Daikomoku_str + " : " + ls_Daimon[i].lsSentence;
+                        Daikomoku_txt.text = Daikomoku_str + " : " + 
+                        ls_Daimon[i].lsSentence;
                     else
                         Daikomoku_txt.text = ls_Daimon[i].lsSentence;
                     break;
@@ -301,34 +335,39 @@ public class GameMainScript : MonoBehaviour {
             }
         }
     }
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // DrawScreen
     // 画面への描画処理
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     void DrawScreen()
     {
         // 小項目の描画(大項目は直接描画しているため必要なし)
         int cnt = 0;
         foreach (Transform child in Deck.transform)
         {
+            CardDrag script = child.GetComponent<CardDrag>();
+            script.str_Help = Card_All_strHelp[cnt];   
             Text textComponent = child.GetComponentInChildren<Text>();
             if (DebugFlg.isOn == true)
-                textComponent.text = Card_All_str[cnt] + " : " + Card_All_txt[cnt];
+                textComponent.text = 
+                Card_All_str[cnt] + " : " + Card_All_txt[cnt];
             else
                 textComponent.text = Card_All_txt[cnt];
             cnt++;
+
+            // 詳細の箇所は空欄にする。
+            Text_SC.text = "";
+            strDisplayNow = ""; // 表示用も空にする
         }
 
-        // 詳細の箇所は空欄にする。
-        Text_SC.text = "";
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // JudgeQuestion
     // 問題の正解不正解判定
     // CardオブジェクトよりCardDrag.csを介して
     // 本処理に飛んでくる。
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public void JudgeQuestion(string _name)
     {
         string LastWord = Right(_name, 1);
@@ -360,11 +399,10 @@ public class GameMainScript : MonoBehaviour {
         Debug.Log(LastWord);
     }
 
-
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // Right
     // VBAでいうRight関数
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public static string Right(string str, int len)
     {
         if (len < 0)
@@ -382,10 +420,10 @@ public class GameMainScript : MonoBehaviour {
         return str.Substring(str.Length - len, len);
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // CorrectNext
     // 正解処理
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // 次の問題へ移行 1.5f
     void CorrectNext()
     {
@@ -442,7 +480,8 @@ public class GameMainScript : MonoBehaviour {
 
 	// ボタンへの問題描画
 	void SetAlteText(Button btn,string ary){
-		Text textComponent = btn.gameObject.transform.Find ("Text").gameObject.GetComponent<Text> ();
+		Text textComponent = 
+        btn.gameObject.transform.Find ("Text").gameObject.GetComponent<Text> ();
 		textComponent.text = ary;
 	}
 
@@ -481,10 +520,12 @@ public class GameMainScript : MonoBehaviour {
 	void SentenceDisp(string _Qes,string _Com,string _instcom){
 		string work = "正解は" + _Qes + Environment.NewLine;
 		if (_Com != "")
-			work += "～解説～" + Environment.NewLine + _Com + Environment.NewLine + Environment.NewLine;
+			work += "～解説～" + Environment.NewLine + _Com + Environment.NewLine
+             + Environment.NewLine;
 		work += _instcom;
 		GameObject obj = GameObject.Find ("InstText");
-		UnityEngine.UI.Text textComponent = obj.GetComponent<UnityEngine.UI.Text> ();
+		UnityEngine.UI.Text textComponent = 
+        obj.GetComponent<UnityEngine.UI.Text> ();
 		textComponent.text = work;
 	}
 
@@ -503,22 +544,6 @@ public class GameMainScript : MonoBehaviour {
 		return true;
 	}
 
-	// NoCount更新
-	void DispNoCAupd(){
-        /*
-		GameObject obj = GameObject.Find ("ContinuityText");
-		UnityEngine.UI.Text textComponent = obj.GetComponent<UnityEngine.UI.Text> ();
-		if (NoCA.Equals (0)) {
-			textComponent.text = "";
-			DCcnt = settingdb.Q_num;
-		}
-		else {
-			textComponent.text = "連続" + NoCA + "問正解中";
-
-		}
-        */
-	}
-
 	// 戻るボタン
 	public void backButtonOnClick(){
 //		Common.backButtonOnClick (stage);
@@ -533,64 +558,6 @@ public class GameMainScript : MonoBehaviour {
 		obj.GetComponent<Canvas> ().enabled = true;			// 登録用キャンバス表示
 	}
 
-	// --------------------------------------------------------------------------------
-	// OnClickRegReg
-	// 解説登録の登録ボタン
-	// --------------------------------------------------------------------------------
-	public void OnClickRegReg(){
-        /*
-		Common.btnsnd ();
-//		string work = alex[alcnt].ToString();
-//		string[] values = work.Split (',');
-		int ClassMode = mode;	// 教科
-
-		int Q_num = QuesNo;		// 問題番号
-
-		ArrayList alRR = new ArrayList ();
-
-		GameObject obj = GameObject.Find ("InputField");
-		InputField textComponent = obj.GetComponent<InputField> ();
-		string work = textComponent.text;
-
-		OwnComInit(PlayerPrefs.GetString("MscComdata","")); // 自己解説初期化
-
-		bool flg = false;
-		// 解説として登録(教科とNoがキー)
-		for (int i = 0; i < ls.Count; i++) {
-			int _classmode = ls [i].ClassMode;
-			int _no = ls [i].No;
-			if ((_classmode == ClassMode) &&
-				(_no == Q_num)) {
-				// 新データ登録
-				alRR.Add (_classmode.ToString () + "," + _no.ToString ("D3") + "," + work);
-				flg = true;
-			} else {
-				alRR.Add (_classmode.ToString () + "," + _no.ToString ("D3") + "," + ls [i].ComText);
-			}
-		}
-		if(!flg)
-			alRR.Add (ClassMode.ToString () + "," + Q_num.ToString ("D3") + "," + work);
-
-		alRR.Sort();
-
-		string svwork = "";
-		for (int i = 0; i < alRR.Count; i++) {
-			svwork += alRR [i];
-			if (i < alRR.Count - 1)
-				svwork += Environment.NewLine;
-		}
-
-		// セーブ
-		PlayerPrefs.SetString("MscComdata",svwork);
-		OwnComInit (svwork);
-
-		// 登録画面クローズ
-		OnClickRegCan();
-		// 解説更新
-		SentenceDisp (InstCls, work, InstCom);
-        */
-	}
-
 	// 登録キャンセル
 	public void OnClickRegCan(){
 		Common.btnsnd ();
@@ -600,17 +567,17 @@ public class GameMainScript : MonoBehaviour {
 		obj.GetComponent<Button> ().interactable = true;
 	}
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // 新解答ボタン押下処理
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public void ButtonClick_S(string _str)
     {
 //        Debug.Log(_str);
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // 解答ボタン押下処理
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public void ButtonClick(GameObject name){
         /*
 		Text textcomponent = name.GetComponent<Text> ();
@@ -621,10 +588,10 @@ public class GameMainScript : MonoBehaviour {
             */
 	}
 
-	// --------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// DCInit
 	// デイリーカリキュラム時の初期設定
-	// --------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	bool DCInit(){
         /*
 		DCcnt = settingdb.Q_num;
@@ -658,34 +625,6 @@ public class GameMainScript : MonoBehaviour {
 		return false;
 	}
 
-	// --------------------------------------------------------------------------------
-	// SetSubject
-	// ・画面に教科を表示
-	// ・教科より問題数を取得
-	// --------------------------------------------------------------------------------
-	void SetSubject(){
-        /*
-		string work  = Common.SetSubject (mode);	// 共通より教科を取得
-		GameObject obj = GameObject.Find ("GenreText");
-		UnityEngine.UI.Text textComponent = obj.GetComponent<UnityEngine.UI.Text> ();
-		textComponent.text = work; // 教科を表示(学習指導要領など)
-
-		if (mode.Equals (3)) {
-			ToneScaleManager TCM = GetComponent<ToneScaleManager> ();
-			TCM.ToneQuesDisplay ();
-			return;
-		}
-
-		CSVReaderScript csvr = GetComponent<CSVReaderScript> ();
-		QuestCnt = csvr.GetCsv (mode);	// 教科より問題数を表示
-		InstCls = "";
-		InstCom = "";
-
-		// 問題を描画
-		QuestDisplay();
-        */
-	}
-
 	void btnsnd(){
 		GameObject obj = GameObject.Find ("SoundMaster");
 		if (obj != null) {
@@ -694,17 +633,17 @@ public class GameMainScript : MonoBehaviour {
 		}
 	}
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // RetryButton()
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public void RetryButton()
     {
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("GameMain");
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // CardDequeue()
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     int CardDequeue()
     {
         int i = Card_queue.Dequeue();
@@ -716,12 +655,12 @@ public class GameMainScript : MonoBehaviour {
         return i;
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // GetOwnComment
     // 自己解説取得(03和音とコードネーム以外)
     // 自己解説が登録されていれば解説を返す
     // 自己解説が登録されていなければ""を返す
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     string GetOwnComment(int _ClassMode,int _Qnum){
 		// コメントゲット
 /*		for (int i = 0; i < ls.Count; i++) {
@@ -734,10 +673,10 @@ public class GameMainScript : MonoBehaviour {
 		return "";
 	}
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // Changeflg_CardBring
     // カード保持フラグ切り替え
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public void Changeflg_CardBring(bool _flg)
     {
         if ((flg_CardBring == false) &&  // カード持っていない状態から
@@ -748,10 +687,10 @@ public class GameMainScript : MonoBehaviour {
     flg_CardBring = _flg;
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // Changeflg_Put
     // カード置きフラグ切り替え
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public void Changeflg_Put(bool _flg)
     {
         if (_flg == true)
@@ -760,13 +699,14 @@ public class GameMainScript : MonoBehaviour {
             flg_Put = false;
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // ColPos_Judge
     // それぞれの床に聞きに行く
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     static bool ColPos_Judge()  // それぞれの床に聞きに行く
     {
-        GameObject CardField = GameObject.Find("CardField"); // ないとエラーが出る。原因不明
+        // ないとエラーが出る。原因不明
+        GameObject CardField = GameObject.Find("CardField");
         foreach (Transform child in CardField.transform)
         {
             foreach(Transform son in child.transform)
@@ -784,20 +724,20 @@ public class GameMainScript : MonoBehaviour {
         return false;
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // CheckFieldCube()
     // FieldCubeよりUpdateを受けてCheck処理が走る
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public void CheckFieldCube()
     {
         if (ColPos_Judge() == false)
             flg_Put = false;    // カード置かれていませんよフラグ
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // ButtonClick_JudgenChange()
     // Judge n Change ボタンクリック処理
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public void ButtonClick_JudgenChange()
     {
         flg_operate = false;    // ボタン操作フラグオフ
@@ -889,13 +829,15 @@ public class GameMainScript : MonoBehaviour {
                         script.flg_EnableMove = false;
                         foreach(Transform son in child.transform)
                         {
-                            if (strArray[i] == "正解" && son.name == "Hanamaru") // 花丸の表示
-
+                            // 花丸の表示
+                            if (strArray[i] == "正解" && son.name == "Hanamaru")
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 break;
                             }
-                            else if(strArray[i] == "不正解" && son.name == "Batu") // バツの表示
+                            // バツの表示
+                            else if 
+                            (strArray[i] == "不正解" && son.name == "Batu") 
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 Card_queue.Enqueue(Card_All_int[i]);
@@ -910,10 +852,10 @@ public class GameMainScript : MonoBehaviour {
         flg_Put = false;    // カード置きフラグオフ
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // NextCardButton_OnClick()
     // 次のカードボタン押下処理
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public void NextCardButton_OnClick()
     {
         for (int i = 0; i < strArray.Length; i++)
@@ -1015,12 +957,24 @@ public class GameMainScript : MonoBehaviour {
         PanelClear.SetActive(true);
     }
 
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // OnClick_Help()
     // ヘルプボタン押下処理
-    // --------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public void OnClick_Help()
     {
         Debug.Log(strDisplayNow);
+        // フラグ変更
+//        Card_All_help[int.Parse(this.name.Replace("card_", ""))] = true;
+        foreach (Transform child in Deck.transform)
+        {
+            if(child.gameObject.name == strDisplayNow)
+            {
+                CardDrag script = child.GetComponent<CardDrag>();
+                script.flg_Help = true;
+                script.PointerDown();   // 表示の更新
+            }
+        }
+
     }
 }

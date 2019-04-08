@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class CardDrag : MonoBehaviour
 {
-    public Text Text_SC;    // 詳細欄
     public GameObject GameMain;
     GameMainScript GMScript;    // ゲームメインスクリプト
 
@@ -53,9 +52,10 @@ public class CardDrag : MonoBehaviour
     public void PointerDown()   // 振れた時の処理。詳細欄に内容が表示される
     {
         if (flg_Help == false)  // ヘルプフラグチェック
-            Text_SC.text = this.gameObject.GetComponentInChildren<Text>().text;
+            GMScript.ChangeText_SC
+            (this.gameObject.GetComponentInChildren<Text>().text);
         else
-            Text_SC.text = str_Help;    // ヘルプを表示
+            GMScript.ChangeText_SC(str_Help);
 
         pointerflg = true; // 持っている
         GMScript.Changeflg_CardBring(true); // 持ってますよフラグオン

@@ -74,6 +74,9 @@ public class GameMainScript : MonoBehaviour {
 
     public string strDisplayNow;   // 表示中を格納管理
 
+    // scrollRect
+    ScrollRect myScrollRect;
+
     // Use this for initialization
     void Start () {
         tForm = GameObject.Find("JudgeChargeCanvas");
@@ -87,6 +90,8 @@ public class GameMainScript : MonoBehaviour {
         NextButtonCanvas = 
         GameObject.Find("NextButtonCanvas").GetComponent<Canvas>();
         strDisplayNow = ""; // 表示中間利用初期化
+        myScrollRect = GameObject.Find("Sentence_Cube").GetComponent<ScrollRect>
+        ();
 
         flg_CardBring = false;  // カード保持フラグ初期化
         flg_Put = false;        // カード置きフラグ初期化
@@ -981,6 +986,7 @@ public class GameMainScript : MonoBehaviour {
     public void ChangeText_SC(string _txt)
     {
         Text_SC.text = _txt;
+        myScrollRect.verticalNormalizedPosition = 1f;   // スクロールバーをトップへ
     }
 
     // -------------------------------------------------------------------------

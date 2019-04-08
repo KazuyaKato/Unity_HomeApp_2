@@ -51,15 +51,23 @@ public class CardDrag : MonoBehaviour
     // -------------------------------------------------------------------------
     public void PointerDown()   // 振れた時の処理。詳細欄に内容が表示される
     {
-        if (flg_Help == false)  // ヘルプフラグチェック
-            GMScript.ChangeText_SC
-            (this.gameObject.GetComponentInChildren<Text>().text);
-        else
-            GMScript.ChangeText_SC(str_Help);
-
+        DisplayText_SC(); // 詳細欄への記入処理
         pointerflg = true; // 持っている
         GMScript.Changeflg_CardBring(true); // 持ってますよフラグオン
         GMScript.strDisplayNow = this.gameObject.name;  // 本オブジェクトの名前
+    }
+
+    // -------------------------------------------------------------------------
+    // DisplayText_SC
+    // 詳細欄への記入処理
+    // -------------------------------------------------------------------------
+    public void DisplayText_SC()
+    {
+        if (flg_Help == false)  // ヘルプフラグチェック
+            GMScript.ChangeText_SC // テキストの変更
+            (this.gameObject.GetComponentInChildren<Text>().text);
+        else
+            GMScript.ChangeText_SC(str_Help);
     }
 
     // -------------------------------------------------------------------------

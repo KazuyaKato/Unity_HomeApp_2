@@ -966,7 +966,7 @@ public class GameMainScript : MonoBehaviour {
             {
                 CardDrag script = child.GetComponent<CardDrag>();
                 script.flg_Help = true;
-                script.PointerDown();   // 表示の更新
+                script.DisplayText_SC(); // 表示の更新
             }
         }
     }

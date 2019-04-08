@@ -356,7 +356,7 @@ public class GameMainScript : MonoBehaviour {
             cnt++;
 
             // 詳細の箇所は空欄にする。
-            Text_SC.text = "";
+            ChangeText_SC("");
             strDisplayNow = ""; // 表示用も空にする
         }
 
@@ -495,10 +495,7 @@ public class GameMainScript : MonoBehaviour {
         if ((flg_CardBring == false) && // カード保持していない checked
             (flg_Put == true) &&        // カード置いてある
             (flg_JnC == false))         // ボタン非表示
-        {
-            tForm.GetComponent<Canvas>().enabled = true;
-            flg_JnC = true;
-        }
+            Change_JudgenChangeButton(true);
     }
 
 	// 自己解説読み込み
@@ -680,10 +677,8 @@ public class GameMainScript : MonoBehaviour {
     public void Changeflg_CardBring(bool _flg)
     {
         if ((flg_CardBring == false) &&  // カード持っていない状態から
-        _flg == true) {                   // カードを持っている状態になる時
-            tForm.GetComponent<Canvas>().enabled = false;
-            flg_JnC = false;
-                }
+        _flg == true) // カードを持っている状態になる時
+            Change_JudgenChangeButton(false);
     flg_CardBring = _flg;
     }
 
@@ -741,8 +736,7 @@ public class GameMainScript : MonoBehaviour {
     public void ButtonClick_JudgenChange()
     {
         flg_operate = false;    // ボタン操作フラグオフ
-        tForm.GetComponent<Canvas>().enabled = false;   // ボタン非表示
-        flg_JnC = false;    // ボタン表示フラグオフ
+        Change_JudgenChangeButton(false);
         // 載っているカードの枚数を取得するとして
         // どうやればそれができるのか。
         // それぞれのCardFieldに聞きにいくしかあるまい。
@@ -972,9 +966,31 @@ public class GameMainScript : MonoBehaviour {
             {
                 CardDrag script = child.GetComponent<CardDrag>();
                 script.flg_Help = true;
-                script.PointerDown();   // 表示の更新
+                script.DisplayText_SC(); // 表示の更新
             }
         }
+    }
 
+    // -------------------------------------------------------------------------
+    // ChangeText_SC()
+    // helpボタンのための表示切り替え処理
+    // 表示が切り替わったらかならずここを通る
+    // もし表示が切り替わったら
+    // 現在表示中のものは strDisplayNow
+    // -------------------------------------------------------------------------
+    public void ChangeText_SC(string _txt)
+    {
+        Text_SC.text = _txt;
+    }
+
+    // -------------------------------------------------------------------------
+    // Change_JudgenChangeButton()
+    // JudgenChangeボタンの表示、非表示
+    // true = 表示、false = 非表示
+    // -------------------------------------------------------------------------
+    void Change_JudgenChangeButton(bool _flg)
+    {
+        tForm.GetComponent<Canvas>().enabled = _flg;
+        flg_JnC = _flg;
     }
 }

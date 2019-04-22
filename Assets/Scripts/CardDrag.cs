@@ -63,11 +63,11 @@ public class CardDrag : MonoBehaviour
     // -------------------------------------------------------------------------
     public void DisplayText_SC()
     {
-        if (flg_Help == false)  // ヘルプフラグチェック
+        if (flg_Help == false)  // ヘルプフラグチェック_True時はヘルプ反映のものを表示
             GMScript.ChangeText_SC // テキストの変更
             (this.gameObject.GetComponentInChildren<Text>().text);
         else
-            GMScript.ChangeText_SC(str_Help);
+            GMScript.ChangeText_SC(str_Help); // helpの文章で表示
     }
 
     // -------------------------------------------------------------------------

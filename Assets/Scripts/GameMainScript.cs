@@ -223,10 +223,11 @@ public class GameMainScript : MonoBehaviour {
                 if (Card_queue.Count > 0)
                 {
                     int tmpi = CardDequeue();
-                        Card_All_str[i] = NoTolsCode(tmpi); // 正解コード
-                    Card_All_int[i] = tmpi; // 番号を保存
-                    Card_All_txt[i] = NoToSentence(tmpi);
-                    Card_All_strHelp[i] = NoToHelpSentence(tmpi);
+         //           Card_All_str[i] = NoTolsCode(tmpi); // 正解コード
+           //         Card_All_int[i] = tmpi; // 番号を保存
+             //       Card_All_txt[i] = NoToSentence(tmpi);
+               //     Card_All_strHelp[i] = NoToHelpSentence(tmpi);
+                    CardUpdating(i,tmpi); // カード配列更新処理
                 }
             }
         }
@@ -898,12 +899,13 @@ public class GameMainScript : MonoBehaviour {
         if (Card_queue.Count > 0)
         { // デッキにカードがまだあれば
             i = CardDequeue();
-            str = NoTolsCode(i);
-            txt = NoToSentence(i);
+//            str = NoTolsCode(i);
+  //          txt = NoToSentence(i);
         }
-        Card_All_str[_i] = str;
-        Card_All_int[_i] = i; // 番号を保存
-        Card_All_txt[_i] = txt;
+        CardUpdating(_i,i); // カード管理配列更新処理
+    //    Card_All_str[_i] = str;
+      //  Card_All_int[_i] = i; // 番号を保存
+        //Card_All_txt[_i] = txt;
 
         // カード終了チェック処理
         int j;
@@ -920,6 +922,17 @@ public class GameMainScript : MonoBehaviour {
             PanelClear.SetActive(true);
         }
 
+    }
+    // --------------------------------------------------------------------------------
+    // CardUpdating()
+    // カード管理配列更新処理
+    // --------------------------------------------------------------------------------
+    void CardUpdating(int _Arrayi,int _tmpi)
+    {
+        Card_All_str[_Arrayi] = NoTolsCode(_tmpi); // 正解コード
+        Card_All_int[_Arrayi] = _tmpi; // 番号を保存
+        Card_All_txt[_Arrayi] = NoToSentence(_tmpi);
+        Card_All_strHelp[_Arrayi] = NoToHelpSentence(_tmpi);
     }
 
     // --------------------------------------------------------------------------------

@@ -156,7 +156,7 @@ public class CardDrag : MonoBehaviour
             this.transform.position.x,this.transform.position.y, 
                 this.transform.position.z),
             new Vector3(posx, posy, this.transform.position.z),
-        Time.deltaTime * 8);
+        Time.deltaTime * 3);
 
         if (flg_Reduction　== true)  // カード縮小処理
         {

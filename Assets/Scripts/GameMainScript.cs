@@ -57,6 +57,7 @@ public class GameMainScript : MonoBehaviour {
     public GameObject PanelClear;   // クリアパネル
     private GameObject tForm;
     private GameObject DeckMaster;
+    private Text Text_CardNum;  // デッキ枚数
     private Canvas DeckMasterCanvas;    // デッキマスターキャンバス
     private Canvas NextButtonCanvas;    // NextCardボタン
 
@@ -85,6 +86,7 @@ public class GameMainScript : MonoBehaviour {
         Deck = GameObject.Find("Deck");
         CardField = GameObject.Find("CardField");
         DeckMaster = GameObject.Find("DeckMaster"); // デッキマスターをセット
+        Text_CardNum = GameObject.Find("Text_CardNum").GetComponent<Text>();
         flg_DeckMasterDisabled = false; // デッキマスター非表示フラグ
         DeckMasterCanvas = DeckMaster.GetComponent<Canvas>();
         NextButtonCanvas = 
@@ -360,6 +362,9 @@ public class GameMainScript : MonoBehaviour {
             else
                 textComponent.text = Card_All_txt[cnt];
             cnt++;
+
+            Debug.Log("CardNum = " + Card_queue.Count);
+            Text_CardNum.text = Card_queue.Count.ToString();
 
             // 詳細の箇所は空欄にする。
             ChangeText_SC("");

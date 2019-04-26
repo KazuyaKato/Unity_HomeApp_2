@@ -61,6 +61,8 @@ public class GameMainScript : MonoBehaviour {
     private Canvas DeckMasterCanvas;    // デッキマスターキャンバス
     private Canvas NextButtonCanvas;    // NextCardボタン
 
+    private Button Button_help; // ヘルプボタン
+
     Queue<int> Card_queue = new Queue<int>(); // カードデッキキュー
 
     bool flg_CardBring; // カード保持フラグ
@@ -94,6 +96,8 @@ public class GameMainScript : MonoBehaviour {
         strDisplayNow = ""; // 表示中間利用初期化
         myScrollRect = GameObject.Find("Sentence_Cube").GetComponent<ScrollRect>
         ();
+
+        Button_help = GameObject.Find("Button_help").GetComponent<Button>();
 
         flg_CardBring = false;  // カード保持フラグ初期化
         flg_Put = false;        // カード置きフラグ初期化
@@ -992,6 +996,15 @@ public class GameMainScript : MonoBehaviour {
                 script.DisplayText_SC(); // 表示の更新
             }
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // HelpButtonEnabled()
+    // ヘルプボタン表示非表示処理
+    // -------------------------------------------------------------------------
+    public void HelpButtonEnabled(bool _flg)
+    {
+        Button_help.interactable = _flg;    // ボタン状態変更
     }
 
     // -------------------------------------------------------------------------

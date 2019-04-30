@@ -72,7 +72,7 @@ public class GameMainScript : MonoBehaviour {
     bool flg_DeckMasterDisabled;    // デッキマスター非表示フラグ
 
     // 設定　デッキの数
-    bool DeckLimit = false; // デッキリミット false時は無制限
+    bool DeckLimit = true; // デッキリミット false時は無制限
     int Decknum = 6; // デッキ数 DeckLimit = true時のみ参照
 
     public string strDisplayNow;   // 表示中を格納管理
@@ -1030,4 +1030,14 @@ public class GameMainScript : MonoBehaviour {
         tForm.GetComponent<Canvas>().enabled = _flg;
         flg_JnC = _flg;
     }
+
+    // -------------------------------------------------------------------------
+    // DeckMasterDisabledFunc(bool _flg)
+    // デッキマスター表示処理
+    // -------------------------------------------------------------------------
+    public void DeckMasterDisabledFunc(bool _flg)
+    {
+        DeckMaster.SetActive(true);
+    }
+
 }

@@ -209,6 +209,7 @@ public class CardDrag : MonoBehaviour
     // --------------------------------------------------------------------------------
     void Card_Revival()
     {
+        GMScript.DeckMasterDisabledFunc(true);
         GameObject obj = GameObject.Find("DeckMaster");
         Transform tra = obj.transform.Find("card").gameObject.transform;
         // デッキマスターの位置を取得

@@ -367,7 +367,6 @@ public class GameMainScript : MonoBehaviour {
                 textComponent.text = Card_All_txt[cnt];
             cnt++;
 
-            Debug.Log("CardNum = " + Card_queue.Count);
             Text_CardNum.text = Card_queue.Count.ToString();
 
             // 詳細の箇所は空欄にする。
@@ -879,7 +878,7 @@ public class GameMainScript : MonoBehaviour {
                         {
                             CardDrag script = child.GetComponent<CardDrag>();
                             // ここで縮小命令をかける
-                            script.flg_Reduction = true;
+                            script.Card_Reduct_Order();
                             break;
                          }
                         else if (strArray[i] == "不正解")
@@ -902,9 +901,7 @@ public class GameMainScript : MonoBehaviour {
     // --------------------------------------------------------------------------------
     public void UpdateCard_All(int _i)
     {
-        string str = "";
         int i = 9;
-        string txt = "";
         if (Card_queue.Count > 0)
         { // デッキにカードがまだあれば
             i = CardDequeue();
@@ -969,7 +966,11 @@ public class GameMainScript : MonoBehaviour {
     // --------------------------------------------------------------------------------
     public void FieldCountCheck(int _i)
     {
+        Card_All_int[_i] = 0;
         Card_All_str[_i] = "";  // 該当を空にする
+        Card_All_txt[_i] = "";
+        Card_All_help[_i] = false;
+        Card_All_strHelp[_i] = "";
         for(int i = 0;i < Card_All_str.Length; i++)
         {
             if (Card_All_str[i] != "")
@@ -1037,7 +1038,46 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     public void DeckMasterDisabledFunc(bool _flg)
     {
-        DeckMaster.SetActive(true);
+        DeckMaster.SetActive(_flg);
+    }
+
+
+    // -------------------------------------------------------------------------
+    // CardDrag_flgActCheck()
+    // CardDragのflg_Actチェック処理
+    // -------------------------------------------------------------------------
+    public void CardDrag_flgActCheck()
+    {
+        // 全てのカードのフラグ状態をチェック
+        foreach (Transform child in Deck.transform)
+        {
+            CardDrag script = child.GetComponent<CardDrag>();
+            if (script.flg_Act == true) // まだ実施中のものがあれば処理を廃棄
+                return;
+        }
+        for (int i = 0; i < Card_All_str.Length; i++)
+        {
+            if (Card_All_str[i] == "")
+            {  // empty
+                // カード探す
+                GameObject child = GameObject.Find("GameCanvas/Deck/card_" + i);
+                if (Card_queue.Count > 0)  // dequeueが空でなくば
+                {
+                    CardUpdating(i, CardDequeue()); // カードを格納
+                    child.SetActive(true);  // デッキを再表示にする
+                    CardDrag script = child.GetComponent<CardDrag>();
+                    script.Card_Revival(); // カード復活処理
+                    if (Card_queue.Count == 0)
+                        DeckMasterDisabledFunc(false);  // デッキを再度非表示にする
+                }
+                else
+                {
+                    child.SetActive(false); // 非表示に
+                    FieldCountCheck(i); // 値を空にする+カウントチェック
+                }
+            }
+        }
+        DrawScreen();   // デッキ枚数描画等
     }
 
 }

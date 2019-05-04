@@ -67,15 +67,12 @@ public class FieldCube : MonoBehaviour
         if (Common.Left(collision.gameObject.name, 5) == "card_")
         {
             // 衝突判定を
-            Debug.Log("Exit2D");
             Card_Count--;
             if (Card_Count < 1)
                 flg_Put = false;
 
             // 衝突から抜けたカード情報を反映
             blArray[int.Parse(collision.gameObject.name.Substring(5))] = false;
-            Debug.Log("配列状態出力  0 = " + blArray[0] + "  1 = " + blArray[1] +
-    "  2 = " + blArray[2] + "  3 = " + blArray[3] + "  4 = " + blArray[4]);
 
         }
     }

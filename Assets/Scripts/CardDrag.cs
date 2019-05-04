@@ -14,9 +14,10 @@ public class CardDrag : MonoBehaviour
 
     bool colflg = false; // 衝突用フラグ
     bool pointerflg = false; // 持っているかどうかのフラグ
-    public bool flg_Reduction = false; //  縮小フラグ
+    private bool flg_Reduction = false; //  縮小フラグ
     public bool flg_EnableMove = true;  // カード操作可能フラグ
     private bool flg_DeckBack = false;   // デッキに戻るフラグ
+    public bool flg_Act = false;    // 処理中フラグ 処理中はオン
 
     // help機能用
     public bool flg_Help = false;   // ヘルプ機能のonoff
@@ -115,6 +116,7 @@ public class CardDrag : MonoBehaviour
     {
         flg_DeckBack = true;    // デッキにカードを戻す処理
         GMScript.DeckMasterOverrideSorting(2);  // マスターデッキを浮かせる
+        flg_Act = true; // フラグ挙動
     }
 
     // --------------------------------------------------------------------------------
@@ -175,13 +177,9 @@ public class CardDrag : MonoBehaviour
             else
             {
                 flg_Reduction = false;
-                if (GMScript.DeckCountCheck() > 0)
-                    Card_Revival();
-                else
-                {
-                    this.gameObject.SetActive(false); // カード非表示にする
-                    GMScript.FieldCountCheck(thisnamenum);
-                }
+                flg_Act = false;
+                GMScript.FieldCountCheck(thisnamenum);
+                GMScript.CardDrag_flgActCheck();    // フラグアクトチェック
             }
         }
 
@@ -197,7 +195,10 @@ public class CardDrag : MonoBehaviour
             {
                 flg_DeckBack = false;
                 GMScript.DeckMasterOverrideSorting(1);  // マスターデッキを落とす
-                Card_Revival();
+                Debug.Log("203_Card_Revival " + thisnamenum);
+                GMScript.FieldCountCheck(thisnamenum); // カードデータ初期化
+                flg_Act = false;
+                GMScript.CardDrag_flgActCheck();    // フラグアクトチェック
             }
         }
 
@@ -207,7 +208,7 @@ public class CardDrag : MonoBehaviour
     // Card_Revival()
     // カード復活処理
     // --------------------------------------------------------------------------------
-    void Card_Revival()
+    public void Card_Revival()
     {
         GMScript.DeckMasterDisabledFunc(true);
         GameObject obj = GameObject.Find("DeckMaster");
@@ -223,13 +224,21 @@ public class CardDrag : MonoBehaviour
         Batu.enabled = false; // 罰マークdisabled
         flg_Help = false;   // ヘルプフラグ初期化
 
-        // 次の問題に表示を変える処理
-        GMScript.UpdateCard_All(thisnamenum);
-
         // カードが元の位置に戻る処理
         colflg = false;
         pointerflg = false;
         flg_EnableMove = true;  // 操作フラグ許可
 
     }
+
+    // --------------------------------------------------------------------------------
+    // Card_Reduct_Order()
+    // カード縮小命令
+    // --------------------------------------------------------------------------------
+    public void Card_Reduct_Order()
+    {
+        flg_Reduction = true;
+        flg_Act = true;
+    }
+
 }

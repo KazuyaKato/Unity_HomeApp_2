@@ -8,7 +8,7 @@ public class FieldCube : MonoBehaviour
 
     public GameObject GameMain;
     GameMainScript GMScript;    // ゲームメインスクリプト
-     public int Card_Count = 0;
+    public int Card_Count = 0;
     bool[] blArray;  // 置かれたオブジェクト名を保持するArray
 
     // Start is called before the first frame update
@@ -42,6 +42,9 @@ public class FieldCube : MonoBehaviour
     // --------------------------------------------------------------------------------
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (GMScript.GetCardBring() == false)   // カード持っていなければ無効
+            return;
+
         if(Common.Left(collision.gameObject.name, 5) == "card_")
         {
             if (flg_Put == false)
@@ -50,8 +53,6 @@ public class FieldCube : MonoBehaviour
             Card_Count++;
 
             // 衝突したカード情報を保存
-            //            int i = int.Parse(collision.gameObject.name.Substring(5));
-            //            blArray[i] = true;
             blArray[int.Parse(collision.gameObject.name.Substring(5))] = true;
             //Debug.Log("配列状態出力  0 = " + blArray[0] + "  1 = " + blArray[1] +
             //    "  2 = " + blArray[2] + "  3 = " + blArray[3] + "  4 = " + blArray[4]);

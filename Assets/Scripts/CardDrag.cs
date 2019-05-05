@@ -89,7 +89,6 @@ public class CardDrag : MonoBehaviour
             InitPos();  // 初期位置へ戻す
             pointerflg = false; // 持っていない
             GMScript.Changeflg_Put(false); // 置きflgをoffへ？
-
         }
         else
         {
@@ -240,5 +239,14 @@ public class CardDrag : MonoBehaviour
         flg_Reduction = true;
         flg_Act = true;
     }
+    // --------------------------------------------------------------------------------
+    // Getcolflg()
+    // カード衝突判定取得
+    // --------------------------------------------------------------------------------
+    public bool Getcolflg()
+    {
+        return colflg;
+    }
+
 
 }

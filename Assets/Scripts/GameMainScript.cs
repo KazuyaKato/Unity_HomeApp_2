@@ -502,9 +502,6 @@ public class GameMainScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-        // 縮小test
-        //
-
         // カードを持っていない
         if ((flg_CardBring == false) && // カード保持していない checked
             (flg_Put == true) &&        // カード置いてある
@@ -1041,7 +1038,6 @@ public class GameMainScript : MonoBehaviour {
         DeckMaster.SetActive(_flg);
     }
 
-
     // -------------------------------------------------------------------------
     // CardDrag_flgActCheck()
     // CardDragのflg_Actチェック処理
@@ -1080,4 +1076,12 @@ public class GameMainScript : MonoBehaviour {
         DrawScreen();   // デッキ枚数描画等
     }
 
+    // -------------------------------------------------------------------------
+    // GetCardBring()
+    // カード保持情報の外部からの取得
+    // -------------------------------------------------------------------------
+    public bool GetCardBring()
+    {
+        return flg_CardBring;
+   }
 }

@@ -68,8 +68,8 @@ public class GameMainScript : MonoBehaviour {
     bool flg_CardBring; // カード保持フラグ
     bool flg_Put; // カード置きフラグ
     bool flg_JnC; // ボタン表示フラグ
-    bool flg_operate;   // カード操作フラグ
-    bool flg_DeckMasterDisabled;    // デッキマスター非表示フラグ
+    //bool flg_operate;   // カード操作フラグ
+    //bool flg_DeckMasterDisabled;    // デッキマスター非表示フラグ
 
     // 設定　デッキの数
     bool DeckLimit = true; // デッキリミット false時は無制限
@@ -80,6 +80,9 @@ public class GameMainScript : MonoBehaviour {
     // scrollRect
     ScrollRect myScrollRect;
 
+    // SaveDataManager
+    SaveDataManager SDM;
+
     // Use this for initialization
     void Start () {
         tForm = GameObject.Find("JudgeChargeCanvas");
@@ -89,7 +92,7 @@ public class GameMainScript : MonoBehaviour {
         CardField = GameObject.Find("CardField");
         DeckMaster = GameObject.Find("DeckMaster"); // デッキマスターをセット
         Text_CardNum = GameObject.Find("Text_CardNum").GetComponent<Text>();
-        flg_DeckMasterDisabled = false; // デッキマスター非表示フラグ
+        //flg_DeckMasterDisabled = false; // デッキマスター非表示フラグ
         DeckMasterCanvas = DeckMaster.GetComponent<Canvas>();
         NextButtonCanvas = 
         GameObject.Find("NextButtonCanvas").GetComponent<Canvas>();
@@ -99,9 +102,11 @@ public class GameMainScript : MonoBehaviour {
 
         Button_help = GameObject.Find("Button_help").GetComponent<Button>();
 
+        SDM = GetComponent<SaveDataManager>();  // SaveDataManager
+
         flg_CardBring = false;  // カード保持フラグ初期化
         flg_Put = false;        // カード置きフラグ初期化
-        flg_operate = true;     // カード操作フラグ初期化
+        //flg_operate = true;     // カード操作フラグ初期化
         if (GameLevel.Equals(0))
             GameLevel = 1;
 
@@ -633,6 +638,12 @@ public class GameMainScript : MonoBehaviour {
 		return false;
 	}
 
+    // -------------------------------------------------------------------------
+    // GameEnd()
+    // ゲームエンド処理
+    // -------------------------------------------------------------------------
+    string GameEnd(){ // デイリーカリキュラム時のゲームエンド         GameObject obj = GameObject.Find ("SoundMaster");       if (obj != null) {          SoundMaster script = obj.GetComponent<SoundMaster> ();          script.PlaySEClr ();        }         var ls = new List<strData> ();          // 既存構造体作成          // スタンプ用保存データ取得         string DataWork = PlayerPrefs.GetString (SDM.GetStmpName (), "");       StringReader reader = new StringReader (DataWork);          if (ls.Count.Equals (0)) {          while (reader.Peek () > -1) {               string line = reader.ReadLine ();               string[] values = line.Split (',');                 if (values [0] != "")                   ls.Add (new strData (int.Parse (values [0]), int.Parse (values [1]), int.Parse (values [2]), int.Parse (values [3]), int.Parse (values [4])));          }       }       int listyear = System.DateTime.Now.Year;        int listmonth = System.DateTime.Now.Month;      int listday = System.DateTime.Now.Day;      int listmeridiem = 1;       if (System.DateTime.Now.Hour > 11)          listmeridiem = 2;       string sNow = listyear + "," + listmonth + "," + listday + "," + listmeridiem + "," + mode;         // 比較       if (ls.Count < 1) {             return sNow; // 既存がない場合は最新のみを返す         }       string swork = "";          bool exFlg = false;         bool nwFlg = false;         string sExi = ""; // 既存データ保存用       sNow = "";        // 新規データ保存用       sExi = ls [0].year.ToString () + "," + ls [0].month.ToString () + "," + ls [0].day.ToString () + ","            + ls [0].meridiem.ToString () + "," + ls [0].mode.ToString ();      sNow =     listyear.ToString() + "," +     listmonth.ToString() + "," +     listday.ToString() + ","            +     listmeridiem.ToString() + "," +         mode.ToString();      string str_ex = ls [0].year.ToString() + ls [0].month.ToString() + ls [0].day.ToString() + ls [0].meridiem.ToString()           + ls [0].mode.ToString();       string str_nw =    listyear.ToString() +    listmonth.ToString() +    listday.ToString() +    listmeridiem.ToString()           +        mode.ToString();       int i_ex = int.Parse (str_ex);      int i_nw = int.Parse (str_nw);      int i = 0;          while (true) {          if (exFlg) {    // 既存終了時                swork += sNow;              break;          }           if (nwFlg) {    // 新規終了時                swork += sExi;              break;          }           if (i_ex < i_nw) {  // 既存が小さい時              swork += sExi + System.Environment.NewLine;                 if (ls.Count > i + 1) {                     ++i;                    sExi = ls [i].year.ToString () + "," + ls [i].month.ToString () + "," + ls [i].day.ToString () + ","                        + ls [i].meridiem.ToString () + "," + ls [i].mode.ToString ();                  str_ex = ls [i].year.ToString() + ls [i].month.ToString() + ls [i].day.ToString()                       + ls [i].meridiem.ToString() + ls [i].mode.ToString();                  i_ex = int.Parse (str_ex);              }  else {                   exFlg = true;               }               continue;           }           if (i_ex == i_nw) {                 return "already";           }           if (i_ex > i_nw) {  // 新規が小さい時              swork += sNow + System.Environment.NewLine;                 {                   nwFlg = true;                   continue;               }           }           //Debug.Log ("something wrong");            return "already";       }       //Debug.Log ("Save Successfully");      return swork;   }
+
 	void btnsnd(){
 		GameObject obj = GameObject.Find ("SoundMaster");
 		if (obj != null) {
@@ -658,7 +669,7 @@ public class GameMainScript : MonoBehaviour {
         if (Card_queue.Count == 0)
         {   // デッキが0になったら
             DeckMaster.SetActive(false);    // デッキマスター非表示
-            flg_DeckMasterDisabled = true;  // デッキマスター非表示フラグ
+            //flg_DeckMasterDisabled = true;  // デッキマスター非表示フラグ
         }
         return i;
     }
@@ -746,7 +757,7 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     public void ButtonClick_JudgenChange()
     {
-        flg_operate = false;    // ボタン操作フラグオフ
+        //flg_operate = false;    // ボタン操作フラグオフ
         Change_JudgenChangeButton(false);
         // 載っているカードの枚数を取得するとして
         // どうやればそれができるのか。

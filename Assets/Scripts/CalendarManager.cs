@@ -226,7 +226,7 @@ public class CalendarManager : MonoBehaviour {
 				while (true) {
 					if (ls.Count > cnt) {
 						if (stmpCheck (prevMonth.Year, prevMonth.Month, prevMonthDay, ls [cnt]).Equals (true)) {
-							StmpDisp (cDay.transform.position.x, cDay.transform.position.y, ls [cnt].meridiem);
+							StmpDisp (cDay.transform.position.x, cDay.transform.position.y, ls [cnt].mode);
 							cnt = cnt + 1;
 						} else {
 							break;
@@ -251,7 +251,7 @@ public class CalendarManager : MonoBehaviour {
 				while (true) {
 					if (ls.Count > cnt) {
 						if (stmpCheck (nextMonth.Year, nextMonth.Month, nextMonthDay, ls [cnt]).Equals (true)) {
-							StmpDisp (cDay.transform.position.x, cDay.transform.position.y, ls [cnt].meridiem);
+							StmpDisp (cDay.transform.position.x, cDay.transform.position.y, ls [cnt].mode);
 							cnt = cnt + 1;
 						} else {
 							break;
@@ -283,7 +283,7 @@ public class CalendarManager : MonoBehaviour {
 				while (true) {
 					if (ls.Count > cnt) {
 						if (stmpCheck (current.Year, current.Month, day, ls [cnt]).Equals (true)) {
-							StmpDisp (cDay.transform.position.x, cDay.transform.position.y, ls [cnt].meridiem);
+							StmpDisp (cDay.transform.position.x, cDay.transform.position.y, ls [cnt].mode);
 							cnt = cnt + 1;
 						} else {
 							break;

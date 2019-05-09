@@ -6,12 +6,12 @@ public struct strData{
 	public int year;
 	public int month;
 	public int day;
-	public int type;
+	public int mode;
 
-	public strData(int year,int month,int day,int type){
+	public strData(int year,int month,int day,int mode){
 		this.year = year;
 		this.month = month;
 		this.day = day;
-		this.type = type;
+		this.mode = mode;
 	}
 }

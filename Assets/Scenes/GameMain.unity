@@ -3795,8 +3795,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameMain: {fileID: 0}
-  flg_Reduction: 0
   flg_EnableMove: 1
+  flg_Act: 0
   flg_Help: 0
   str_Help: 
 --- !u!114 &805894062
@@ -3905,6 +3905,7 @@ GameObject:
   - component: {fileID: 810903751}
   - component: {fileID: 810903755}
   - component: {fileID: 810903756}
+  - component: {fileID: 810903754}
   m_Layer: 0
   m_Name: GameMain
   m_TagString: Untagged
@@ -3957,6 +3958,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &810903754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 810903750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daab006acd7704cdf9e1249430a40e9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &810903755
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7900,8 +7913,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameMain: {fileID: 0}
-  flg_Reduction: 0
   flg_EnableMove: 1
+  flg_Act: 0
   flg_Help: 0
   str_Help: 
 --- !u!114 &1663855439
@@ -8395,8 +8408,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameMain: {fileID: 0}
-  flg_Reduction: 0
   flg_EnableMove: 1
+  flg_Act: 0
   flg_Help: 0
   str_Help: 
 --- !u!114 &1771905604
@@ -8661,8 +8674,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameMain: {fileID: 0}
-  flg_Reduction: 0
   flg_EnableMove: 1
+  flg_Act: 0
   flg_Help: 0
   str_Help: 
 --- !u!114 &1781090261
@@ -9060,8 +9073,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameMain: {fileID: 0}
-  flg_Reduction: 0
   flg_EnableMove: 1
+  flg_Act: 0
   flg_Help: 0
   str_Help: 
 --- !u!114 &1827207356

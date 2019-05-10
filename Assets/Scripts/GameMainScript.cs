@@ -904,45 +904,6 @@ public class GameMainScript : MonoBehaviour {
         }
         NextButtonCanvas.enabled = false;    // NextCardボタン非表示
     }
-
-    // --------------------------------------------------------------------------------
-    // UpdateCard_All()
-    // カード情報更新処理
-    // --------------------------------------------------------------------------------
-    public void UpdateCard_All(int _i)
-    {
-        int i = 9;
-        if (Card_queue.Count > 0)
-        { // デッキにカードがまだあれば
-            i = CardDequeue();
-//            str = NoTolsCode(i);
-  //          txt = NoToSentence(i);
-        }
-        CardUpdating(_i,i); // カード管理配列更新処理
-    //    Card_All_str[_i] = str;
-      //  Card_All_int[_i] = i; // 番号を保存
-        //Card_All_txt[_i] = txt;
-
-        // カード終了チェック処理
-        int j;
-        for (j = 0; j < Card_All_str.Length;j++)
-        {
-            if (Card_All_str[j] != "")
-                break;
-        }
-
-        if(j < Card_All_str.Length)
-            DrawScreen();
-        else
-        {   // ゲームクリア,Retryパネルを表示
-            string str = GameEnd();
-            Debug.Log("str = " + str);
-            if (str != "already")
-                PlayerPrefs.SetString(SDM.GetStmpName(), str);
-            PanelClear.SetActive(true);
-        }
-
-    }
     // --------------------------------------------------------------------------------
     // CardUpdating()
     // カード管理配列更新処理
@@ -997,6 +958,9 @@ public class GameMainScript : MonoBehaviour {
             if (Card_All_str[i] != "")
                 return;
         }
+        string str = GameEnd();
+        if (str != "already")
+            PlayerPrefs.SetString(SDM.GetStmpName(), str);
         PanelClear.SetActive(true);
     }
 

@@ -8,7 +8,6 @@ public class CModeButton : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Debug.Log(DateTime.Now.ToString("yyyy/MM/dd"));
 	}
 	
 	// Update is called once per frame

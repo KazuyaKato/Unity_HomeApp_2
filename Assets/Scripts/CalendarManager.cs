@@ -55,10 +55,11 @@ public class CalendarManager : MonoBehaviour {
 
 	public static string RevQues = "";
 
+    // SaveDataManager
+    SaveDataManager SDM;
 
-	// Use this for initialization
-
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		#if UNITY_IOS
 			NotificationServices.ClearLocalNotifications ();	// 受信したローカル通知を削除
 		#endif
@@ -71,8 +72,9 @@ public class CalendarManager : MonoBehaviour {
 			}
 		}
 
+        SDM = GetComponent<SaveDataManager>();  // SaveDataManager
 
-		ls = new List<strData>();
+        ls = new List<strData>();
 
 		current = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day);
 
@@ -191,7 +193,7 @@ public class CalendarManager : MonoBehaviour {
 			DateTime.DaysInMonth(prevMonth.Year, prevMonth.Month) - (int)first.DayOfWeek + 1;
 
 		// スタンプ用保存データ取得
-		string DataWork = PlayerPrefs.GetString("stmpdata","");
+		string DataWork = PlayerPrefs.GetString(SDM.GetStmpName(), "");
 
 		StringReader reader = new StringReader (DataWork);
 

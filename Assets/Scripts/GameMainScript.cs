@@ -663,6 +663,14 @@ public class GameMainScript : MonoBehaviour {
     }
 
     // -------------------------------------------------------------------------
+    // ToMenuButton()
+    // -------------------------------------------------------------------------
+    public void ToMenuButton()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("DCMain");
+    }
+
+    // -------------------------------------------------------------------------
     // CardDequeue()
     // -------------------------------------------------------------------------
     int CardDequeue()

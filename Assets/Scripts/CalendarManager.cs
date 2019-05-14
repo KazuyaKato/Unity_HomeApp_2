@@ -376,7 +376,7 @@ public class CalendarManager : MonoBehaviour {
 		if(flg)
 			UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("Review");
 		else
-			UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("DCConfirm");
+			UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("ChooseMode");
 
 /*
 		if (RevQues.Equals ("")) {

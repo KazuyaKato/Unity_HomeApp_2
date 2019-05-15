@@ -27,6 +27,6 @@ public class ChooseModeMasterScript : MonoBehaviour {
 			script.PlaySEStgSnd ();
 		}
 
-		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("Title");
+		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("DCMain");
 	}
 }

@@ -560,11 +560,11 @@ public class GameMainScript : MonoBehaviour {
 
 	// 戻るボタン
 	public void backButtonOnClick(){
-//		Common.backButtonOnClick (stage);
-	}
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("ChooseMode");
+    }
 
-	// 解説登録
-	public void OnClickReg(){	// 解説登録
+    // 解説登録
+    public void OnClickReg(){	// 解説登録
 		Common.btnsnd ();
 		GameObject obj = GameObject.Find ("ButtonNext");
 		obj.GetComponent<Button> ().interactable = false;	// NextButton無効

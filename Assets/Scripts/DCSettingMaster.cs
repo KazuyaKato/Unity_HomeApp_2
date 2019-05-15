@@ -105,7 +105,7 @@ public class DCSettingMaster : MonoBehaviour {
 
 	public void LeftOnclick(){
 		btnsnd ();
-		if (numbCnt > 1) {
+		if (numbCnt > 6) {
 			numbCnt--;
 			NumbDisp.text = numbCnt.ToString ();
 		}

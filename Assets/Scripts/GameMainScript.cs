@@ -78,6 +78,8 @@ public class GameMainScript : MonoBehaviour {
 
     public string strDisplayNow;   // 表示中を格納管理
 
+    SettingDB.SetDB settingdb;
+
     // scrollRect
     ScrollRect myScrollRect;
 
@@ -86,6 +88,10 @@ public class GameMainScript : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        // Setting読み込み
+        settingdb = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
+        Decknum = settingdb.Q_num;
+
         tForm = GameObject.Find("JudgeChargeCanvas");
         ColPos_Judge();
         flg_JnC = false; // ボタン表示フラグをオフ

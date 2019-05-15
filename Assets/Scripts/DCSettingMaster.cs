@@ -7,7 +7,7 @@ public class DCSettingMaster : MonoBehaviour {
 	[SerializeField]
 	public Text NumbDisp;
 
-	public static int numbCnt = 5;
+	public static int numbCnt = 6;
 	public Toggle Gaku;	// 01学習指導要領
 	public Toggle Tone;	// 02調・音階
 	public Toggle Song;// 03曲名と作曲者

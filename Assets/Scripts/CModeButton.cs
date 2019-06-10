@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 
@@ -16,6 +17,10 @@ public class CModeButton : MonoBehaviour {
 	}
 
 	public void OnClick(){
+        // ボタン名のテキストデータを拾う
+        Text txt = this.gameObject.transform.Find("Text").gameObject.GetComponent<Text>();
+        string strMode = Common.Left(txt.text, 2);
+        GameMainScript.mode = int.Parse(strMode);
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("GameMain");
         /*
 		GameObject obj = GameObject.Find ("SoundMaster");

@@ -7,7 +7,7 @@ using System;
 
 public class GameMainScript : MonoBehaviour {
 
-    public static int mode = 0; // 出題のタイプ 0 = 家庭科
+    public static int mode = 0; // 出題のタイプ 押下ボタンによる
 
 	struct Komoku_lst{
 		public int No;
@@ -113,7 +113,6 @@ public class GameMainScript : MonoBehaviour {
 
         flg_CardBring = false;  // カード保持フラグ初期化
         flg_Put = false;        // カード置きフラグ初期化
-        //flg_operate = true;     // カード操作フラグ初期化
         if (GameLevel.Equals(0))
             GameLevel = 1;
 
@@ -162,8 +161,8 @@ public class GameMainScript : MonoBehaviour {
                 break;
             }
             string lslevel = words[2];
-            if (lslevel != "1") // ここでバージョンを決める
-                continue;
+            if (lslevel != mode.ToString()) // ここでバージョンを決める
+                continue;   
 
             switch (_komoku)
             {

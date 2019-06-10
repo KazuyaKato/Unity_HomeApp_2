@@ -224,11 +224,11 @@ public class CalendarManager : MonoBehaviour {
 						break;
 				}
 
-
+                int stmpcnt = 0;
 				while (true) {
 					if (ls.Count > cnt) {
 						if (stmpCheck (prevMonth.Year, prevMonth.Month, prevMonthDay, ls [cnt]).Equals (true)) {
-							StmpDisp (cDay.transform.position.x, cDay.transform.position.y, ls [cnt].mode);
+                            stmpcnt++;
 							cnt = cnt + 1;
 						} else {
 							break;
@@ -237,8 +237,9 @@ public class CalendarManager : MonoBehaviour {
 						break;
 					}
 				}
-
-				prevMonthDay++;
+                if (stmpcnt > 0)
+                    StmpDisp(cDay.transform.position.x, cDay.transform.position.y, stmpcnt);    // スタンプ描画処理
+                prevMonthDay++;
 
 			}
 
@@ -250,10 +251,12 @@ public class CalendarManager : MonoBehaviour {
 
 				cDay.dateValue = new DateTime(nextMonth.Year, nextMonth.Month, nextMonthDay);
 
+                int stmpcnt = 0;
+
 				while (true) {
 					if (ls.Count > cnt) {
 						if (stmpCheck (nextMonth.Year, nextMonth.Month, nextMonthDay, ls [cnt]).Equals (true)) {
-							StmpDisp (cDay.transform.position.x, cDay.transform.position.y, ls [cnt].mode);
+                            stmpcnt++;
 							cnt = cnt + 1;
 						} else {
 							break;
@@ -262,8 +265,9 @@ public class CalendarManager : MonoBehaviour {
 						break;
 					}
 				}
-
-				nextMonthDay++;
+                if(stmpcnt > 0)
+                    StmpDisp(cDay.transform.position.x, cDay.transform.position.y, stmpcnt);
+                nextMonthDay++;
 
 			}
 
@@ -282,10 +286,12 @@ public class CalendarManager : MonoBehaviour {
 						break;
 				}
 
+                int stmpcnt = 0;
+
 				while (true) {
 					if (ls.Count > cnt) {
 						if (stmpCheck (current.Year, current.Month, day, ls [cnt]).Equals (true)) {
-							StmpDisp (cDay.transform.position.x, cDay.transform.position.y, ls [cnt].mode);
+                            stmpcnt++;
 							cnt = cnt + 1;
 						} else {
 							break;
@@ -294,8 +300,10 @@ public class CalendarManager : MonoBehaviour {
 						break;
 					}
 				}
+                if (stmpcnt > 0)
+                    StmpDisp(cDay.transform.position.x, cDay.transform.position.y, stmpcnt);
 
-				day++;
+                day++;
 
 			}
 
@@ -329,14 +337,13 @@ public class CalendarManager : MonoBehaviour {
 	// --------------------------------------------------------------------------------
 	// StmpDisp
 	// スタンプ表示
+    // 家庭科ではカウントによってスタンプが異なる
 	// --------------------------------------------------------------------------------
-	void StmpDisp(float _x,float _y,int _meridirem){
+	void StmpDisp(float _x,float _y,int stmpCnt){
 		Vector3 pos = new Vector3 (_x, _y, 0);
 		GameObject obj = null;
-		if(_meridirem.Equals(1))
-			obj = Instantiate (stmpPrefabAM, pos, Quaternion.identity);
-		else
-			obj = Instantiate (stmpPrefabPM, pos, Quaternion.identity);
+        Debug.Log("stmpcnt = " + stmpCnt);
+	    obj = Instantiate (stmpPrefabPM, pos, Quaternion.identity);
 		obj.transform.SetParent(stmpCanvas.transform);
 	}
 

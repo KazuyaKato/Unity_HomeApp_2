@@ -161,6 +161,8 @@ public class GameMainScript : MonoBehaviour {
                 break;
             }
             string lslevel = words[2];
+            if (mode == 0)
+                mode = 1;   
             if (lslevel != mode.ToString()) // ここでバージョンを決める
                 continue;   
 
@@ -875,6 +877,11 @@ public class GameMainScript : MonoBehaviour {
                                 break;
                             }
                         }
+                        // helpの表示
+                        CardDrag CDScript = child.GetComponent<CardDrag>();
+                        CDScript.flg_Help = true; // help表示フラグを更新
+                        if(child.name == strDisplayNow) // 現在表示中の問題であったらば
+                            CDScript.DisplayText_SC(); // 表示の更新
                     }
                 }
             }
@@ -980,18 +987,19 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     // OnClick_Help()
     // ヘルプボタン押下処理
+    // strDisplayNowには現在詳細画面に表示されているカード名が入っている
+    // そのカードのscriptまで行き、help表示flgを立てる
+    // 表示の更新をしたらhelp表示が反映される
     // -------------------------------------------------------------------------
     public void OnClick_Help()
     {
-        Debug.Log(strDisplayNow);
         // フラグ変更
-//        Card_All_help[int.Parse(this.name.Replace("card_", ""))] = true;
         foreach (Transform child in Deck.transform)
         {
-            if(child.gameObject.name == strDisplayNow)
+            if(child.gameObject.name == strDisplayNow) // 現在表示中のものを探す
             {
                 CardDrag script = child.GetComponent<CardDrag>();
-                script.flg_Help = true;
+                script.flg_Help = true; // help表示フラグを更新
                 script.DisplayText_SC(); // 表示の更新
             }
         }

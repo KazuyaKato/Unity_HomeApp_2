@@ -194,7 +194,6 @@ public class CardDrag : MonoBehaviour
             {
                 flg_DeckBack = false;
                 GMScript.DeckMasterOverrideSorting(1);  // マスターデッキを落とす
-                Debug.Log("203_Card_Revival " + thisnamenum);
                 GMScript.FieldCountCheck(thisnamenum); // カードデータ初期化
                 flg_Act = false;
                 GMScript.CardDrag_flgActCheck();    // フラグアクトチェック

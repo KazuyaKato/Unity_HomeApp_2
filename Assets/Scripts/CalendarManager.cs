@@ -343,15 +343,20 @@ public class CalendarManager : MonoBehaviour {
 		Vector3 pos = new Vector3 (_x, _y, 0);
 		GameObject obj = null;
         Debug.Log("stmpcnt = " + stmpCnt);
+        // 配置設定　どのPrefabを、どの位置に
 	    obj = Instantiate (stmpPrefabPM, pos, Quaternion.identity);
 		obj.transform.SetParent(stmpCanvas.transform);
-	}
+        Debug.Log("name = " + obj.name);
+        Texture texture = Resources.Load("Star/Star2") as Texture;
+        Image StmpImage = obj.transform.Find("Image").gameObject.GetComponent<Image>();
+        StmpImage.material.mainTexture = texture;
+    }
 
-	// --------------------------------------------------------------------------------
-	// StartOnClick
-	// スタートボタン押下
-	// --------------------------------------------------------------------------------
-	public void StartOnClick(){
+    // --------------------------------------------------------------------------------
+    // StartOnClick
+    // スタートボタン押下
+    // --------------------------------------------------------------------------------
+    public void StartOnClick(){
 		btnsnd ();
 
 		// ReviewSchene追加

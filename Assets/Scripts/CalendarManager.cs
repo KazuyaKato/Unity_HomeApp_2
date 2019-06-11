@@ -46,10 +46,20 @@ public class CalendarManager : MonoBehaviour {
 
 	public Text MonthText;
 
-	public GameObject stmpPrefabAM;
-	public GameObject stmpPrefabPM;
+	public GameObject stmp1;
+    public GameObject stmp2;
+    public GameObject stmp3;
+    public GameObject stmp4;
+    public GameObject stmp5;
+    public GameObject stmp6;
+    public GameObject stmp7;
+    public GameObject stmp8;
+    public GameObject stmp9;
+    public GameObject stmp10;
+    public GameObject stmp11;
+    public GameObject stmp12;
 
-	public GameObject stmpCanvas;
+    public GameObject stmpCanvas;
 
 	public List<strData> ls = new List<strData>();
 
@@ -342,14 +352,59 @@ public class CalendarManager : MonoBehaviour {
 	void StmpDisp(float _x,float _y,int stmpCnt){
 		Vector3 pos = new Vector3 (_x, _y, 0);
 		GameObject obj = null;
-        Debug.Log("stmpcnt = " + stmpCnt);
+        switch(stmpCnt)
+        {
+            case 1:
+                obj = Instantiate(stmp1, pos, Quaternion.identity);
+                break;
+            case 2:
+                obj = Instantiate(stmp2, pos, Quaternion.identity);
+                break;
+            case 3:
+                obj = Instantiate(stmp3, pos, Quaternion.identity);
+                break;
+            case 4:
+                obj = Instantiate(stmp4, pos, Quaternion.identity);
+                break;
+            case 5:
+                obj = Instantiate(stmp5, pos, Quaternion.identity);
+                break;
+            case 6:
+                obj = Instantiate(stmp6, pos, Quaternion.identity);
+                break;
+            case 7:
+                obj = Instantiate(stmp7, pos, Quaternion.identity);
+                break;
+            case 8:
+                obj = Instantiate(stmp8, pos, Quaternion.identity);
+                break;
+            case 9:
+                obj = Instantiate(stmp9, pos, Quaternion.identity);
+                break;
+            case 10:
+                obj = Instantiate(stmp10, pos, Quaternion.identity);
+                break;
+            case 11:
+                obj = Instantiate(stmp11, pos, Quaternion.identity);
+                break;
+            case 12:
+                obj = Instantiate(stmp12, pos, Quaternion.identity);
+                break;
+            default:
+                break;
+        }
+//        Debug.Log("stmpcnt = " + stmpCnt);
         // 配置設定　どのPrefabを、どの位置に
-	    obj = Instantiate (stmpPrefabPM, pos, Quaternion.identity);
+
 		obj.transform.SetParent(stmpCanvas.transform);
-        Debug.Log("name = " + obj.name);
-        Texture texture = Resources.Load("Star/Star2") as Texture;
-        Image StmpImage = obj.transform.Find("Image").gameObject.GetComponent<Image>();
-        StmpImage.material.mainTexture = texture;
+//        Debug.Log("name = " + obj.name);
+//        Texture2D texture = Resources.Load("Star/Star2") as Texture2D;
+        //        Image imgtmp = Resources.Load("Star/Star2") as Image;
+//        Image StmpImage = obj.transform.Find("Image").gameObject.GetComponent<Image>();
+//        StmpImage = imgtmp;
+//        StmpImage.material.mainTexture = texture;
+//        StmpImage.sprite  = Sprite.Create(texture, new Rect(0,0,))
+//        StmpImage = texture;
     }
 
     // --------------------------------------------------------------------------------

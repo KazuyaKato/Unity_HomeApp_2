@@ -27,16 +27,6 @@ public class TitleMaster : MonoBehaviour {
 			script.PlaySEStgSnd ();
 		}
 
-		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("ChooseMode");
-	}
-
-	public void GoDailyCarriculmOnClick(){
-		GameObject obj = GameObject.Find ("SoundMaster");
-		if (obj != null) {
-			SoundMaster script = obj.GetComponent<SoundMaster> ();
-			script.PlaySEStgSnd ();
-		}
-
 		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("DCMain");
 	}
 

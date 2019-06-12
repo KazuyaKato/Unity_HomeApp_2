@@ -569,6 +569,7 @@ public class GameMainScript : MonoBehaviour {
 
 	// 戻るボタン
 	public void backButtonOnClick(){
+        Common.btnsnd(); // ボタン音再生
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("ChooseMode");
     }
 
@@ -609,43 +610,6 @@ public class GameMainScript : MonoBehaviour {
 		else
 			ButtonAct (false);
             */
-	}
-
-	// -------------------------------------------------------------------------
-	// DCInit
-	// デイリーカリキュラム時の初期設定
-	// -------------------------------------------------------------------------
-	bool DCInit(){
-        /*
-		DCcnt = settingdb.Q_num;
-		if (mode.Equals (9)) {
-			mode = 0;
-			if (settingdb.Gaku.Equals (true))
-				return true;
-		}
-		if ((mode.Equals(0)) &&
-			(settingdb.Tone.Equals (true))) {
-			mode = 1;
-			return true;
-		}
-		if ((mode < 2) &&
-			(settingdb.Song.Equals (true))) {
-			mode = 2;
-			return true;
-		}
-		if ((mode < 3) &&
-		   (settingdb.Chord.Equals (true))) {
-			mode = 3;
-			return true;
-		}
-//		if ((mode < 6) &&
-//		    (settingdb.Gym.Equals (true))) {
-//			mode = 6;
-//			return true;
-//		}
-		GameEnd ();
-        */
-		return false;
 	}
 
     // -------------------------------------------------------------------------

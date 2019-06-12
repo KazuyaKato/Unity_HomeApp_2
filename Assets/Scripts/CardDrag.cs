@@ -83,18 +83,19 @@ public class CardDrag : MonoBehaviour
     // -------------------------------------------------------------------------
     public void PointerUp() // 手を離した時の処理。
     {
+        GameObject obj = GameObject.Find("SoundMaster");
+        if (obj != null)
+        {
+            SoundMaster script = obj.GetComponent<SoundMaster>();
+            script.PlaySEPaperFlip();
+        }
+
         GMScript.Changeflg_CardBring(false); // 持ってますよフラグoff
         if (colflg == false)
         {
             InitPos();  // 初期位置へ戻す
             pointerflg = false; // 持っていない
             GMScript.Changeflg_Put(false); // 置きflgをoffへ？
-        }
-        else
-        {
-    //        GameMainScript script;
-  //          script = GameMain.GetComponent<GameMainScript>();
-//            script.JudgeQuestion(this.gameObject.name);
         }
     }
 

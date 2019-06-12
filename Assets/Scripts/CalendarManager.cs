@@ -393,18 +393,8 @@ public class CalendarManager : MonoBehaviour {
             default:
                 break;
         }
-//        Debug.Log("stmpcnt = " + stmpCnt);
-        // 配置設定　どのPrefabを、どの位置に
 
 		obj.transform.SetParent(stmpCanvas.transform);
-//        Debug.Log("name = " + obj.name);
-//        Texture2D texture = Resources.Load("Star/Star2") as Texture2D;
-        //        Image imgtmp = Resources.Load("Star/Star2") as Image;
-//        Image StmpImage = obj.transform.Find("Image").gameObject.GetComponent<Image>();
-//        StmpImage = imgtmp;
-//        StmpImage.material.mainTexture = texture;
-//        StmpImage.sprite  = Sprite.Create(texture, new Rect(0,0,))
-//        StmpImage = texture;
     }
 
     // --------------------------------------------------------------------------------

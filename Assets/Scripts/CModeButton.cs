@@ -21,6 +21,7 @@ public class CModeButton : MonoBehaviour {
         Text txt = this.gameObject.transform.Find("Text").gameObject.GetComponent<Text>();
         string strMode = Common.Left(txt.text, 2);
         GameMainScript.mode = int.Parse(strMode);
+        Common.btnsnd();
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("GameMain");
         /*
 		GameObject obj = GameObject.Find ("SoundMaster");

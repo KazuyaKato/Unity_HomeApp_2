@@ -9,6 +9,9 @@ public class SoundMaster : MonoBehaviour {
 	public AudioSource SEClr;
 	public AudioSource SEWrng;
 	public AudioSource SEStgSnd;
+    public AudioClip SEpaperFlip;
+    //    public AudioSource SEPaperFlip; // 紙をめくる音
+    AudioSource audioSource;
 
 	void Awake(){
 		DontDestroyOnLoad (this.gameObject);
@@ -16,7 +19,8 @@ public class SoundMaster : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+        // Componentを取得
+        audioSource = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
@@ -46,4 +50,9 @@ public class SoundMaster : MonoBehaviour {
 	public void PlaySEStgSnd(){
 		SEStgSnd.Play ();
 	}
+    public void PlaySEPaperFlip() // 紙をめくる音
+    {
+        audioSource.PlayOneShot(SEpaperFlip);
+//        SEPaperFlip.Play();
+    }
 }

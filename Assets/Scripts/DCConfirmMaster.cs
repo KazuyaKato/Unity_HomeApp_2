@@ -9,7 +9,7 @@ public class DCConfirmMaster : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+        /*
 		SettingDB.SetDB settingdb = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
 
 		Queue<string> queue = new Queue<string> ();
@@ -44,7 +44,7 @@ public class DCConfirmMaster : MonoBehaviour {
 
 				queuework--;
 			}
-		}
+		}*/
 	}
 	
 	// Update is called once per frame

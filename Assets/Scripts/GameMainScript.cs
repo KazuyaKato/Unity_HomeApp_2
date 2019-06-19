@@ -92,6 +92,17 @@ public class GameMainScript : MonoBehaviour {
         settingdb = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
         Decknum = settingdb.Q_num;
 
+        // BGMtoggleがfalseの場合は音を止める
+        if (settingdb.BGMToggle == false)
+        {
+            GameObject obj = GameObject.Find("SoundMaster");
+            if (obj != null)
+            {
+                SoundMaster script = obj.GetComponent<SoundMaster>();
+                script.StopBGM();
+            }
+        }
+
         tForm = GameObject.Find("JudgeChargeCanvas");
         ColPos_Judge();
         flg_JnC = false; // ボタン表示フラグをオフ

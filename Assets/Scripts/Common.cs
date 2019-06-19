@@ -221,13 +221,13 @@ public class Common : MonoBehaviour {
 		}
 		return null;
 	}
-
+    /*
 	public static bool SetSubjectCheck(int _no){
 		bool flg = false;
 		SettingDB.SetDB settingdb;
 		// Save Data Load
 		settingdb = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
-		if ((_no == 0) && settingdb.Gaku)
+		if ((_no == 0) && settingdb.BGMtoggle)
 			flg = true;
 		if ((_no == 1) && settingdb.Tone)
 			flg = true;
@@ -237,4 +237,5 @@ public class Common : MonoBehaviour {
 			flg = true;
 		return flg;
 	}
+    */
 }

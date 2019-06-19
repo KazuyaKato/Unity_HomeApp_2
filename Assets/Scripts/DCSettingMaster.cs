@@ -8,7 +8,7 @@ public class DCSettingMaster : MonoBehaviour {
 	public Text NumbDisp;
 
 	public static int numbCnt = 6;
-	public Toggle Gaku;	// 01学習指導要領
+	public Toggle BGMToggle;	// 学習中の音楽再生
 	public Toggle Tone;	// 02調・音階
 	public Toggle Song;// 03曲名と作曲者
 	public Toggle Chord;	// 04和音とコードネーム
@@ -37,7 +37,7 @@ public class DCSettingMaster : MonoBehaviour {
 
 		numbCnt = settingdb.Q_num;
 		NumbDisp.text = numbCnt.ToString();
-		Gaku.isOn = settingdb.Gaku;		
+        BGMToggle.isOn = settingdb.BGMToggle;		
 		Tone.isOn = settingdb.Tone;
 		Song.isOn = settingdb.Song;
 		Chord.isOn = settingdb.Chord;
@@ -122,14 +122,8 @@ public class DCSettingMaster : MonoBehaviour {
 	public void AdoptOnClick(){ // 適用ボタン押下
 		btnsnd ();
 		// 適用処理
-		if((Gaku.isOn.Equals(false)) &&
-			(Tone.isOn.Equals(false)) &&
-			(Song.isOn.Equals(false)) &&
-			(Chord.isOn.Equals(false)))
-			return;
-
 		settingdb.Q_num = numbCnt;
-		settingdb.Gaku = Gaku.isOn;
+		settingdb.BGMToggle = BGMToggle.isOn;
 		settingdb.Tone = Tone.isOn;
 		settingdb.Song = Song.isOn;
 		settingdb.Chord = Chord.isOn;

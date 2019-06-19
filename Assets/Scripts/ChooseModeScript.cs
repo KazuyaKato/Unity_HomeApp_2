@@ -26,8 +26,6 @@ public class ChooseModeScript : MonoBehaviour
                             iday.ToString("00");
         // 家庭科
         string strHomeDate;
-        // 家庭科用フラグ
-        bool flg_home = false;
         // データ比較
         while(reader.Peek() > -1)
         {

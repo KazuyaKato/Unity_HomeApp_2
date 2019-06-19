@@ -8,7 +8,7 @@ public class SettingDB : MonoBehaviour {
 	public class SetDB{
 		[SerializeField]
 	public int Q_num;
-	public bool Gaku;
+	public bool BGMToggle;
 	public bool Tone;
 	public bool Song;
 	public bool Chord;
@@ -22,7 +22,7 @@ public class SettingDB : MonoBehaviour {
 
 	public SetDB(){
 		Q_num = 5;
-		Gaku = true;
+		BGMToggle = false;
 		Tone = true;
 		Song = true;
 		Chord = true;

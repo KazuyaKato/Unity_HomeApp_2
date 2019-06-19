@@ -424,10 +424,6 @@ public class CalendarManager : MonoBehaviour {
 			string[] values = work.Split (',');
 			int ClassMode = int.Parse (values [0]);
 
-			if (Common.SetSubjectCheck (ClassMode)) {
-				flg = true;
-				break;
-			}
 		}
 
 		if(flg)

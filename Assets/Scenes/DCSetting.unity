@@ -1059,7 +1059,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5B66\u7FD2\u6307\u5C0E\u8981\u9818"
+  m_Text: "\u5B66\u7FD2\u4E2D\u306E\u97F3\u697D\u518D\u751F"
 --- !u!222 &191509090
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4947,7 +4947,7 @@ GameObject:
   - component: {fileID: 841331803}
   - component: {fileID: 841331804}
   m_Layer: 5
-  m_Name: GakuToggle
+  m_Name: BGMToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9544,7 +9544,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NumbDisp: {fileID: 1052241911}
-  Gaku: {fileID: 841331804}
+  BGMToggle: {fileID: 841331804}
   Tone: {fileID: 242982184}
   Song: {fileID: 1062358945}
   Chord: {fileID: 343378439}

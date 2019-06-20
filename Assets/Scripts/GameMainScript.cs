@@ -651,7 +651,7 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     public void ToMenuButton()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("DCMain");
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("ChooseMode");
     }
 
     // -------------------------------------------------------------------------

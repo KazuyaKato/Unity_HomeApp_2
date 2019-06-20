@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4177109450994382}
   m_Layer: 0
-  m_Name: StmpP
+  m_Name: Stmp_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -96,7 +96,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: f71ea153086e54821a06fc5480526dcf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d7ccdfe02fcd849249ff3e6235383c57, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

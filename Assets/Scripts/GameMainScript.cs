@@ -78,6 +78,9 @@ public class GameMainScript : MonoBehaviour {
 
     public string strDisplayNow;   // 表示中を格納管理
 
+    int[] WholeCardArray;   // 全カード格納配列
+    int WholeCardCnt;   // 全カード格納配列用カウント
+
     SettingDB.SetDB settingdb;
 
     // scrollRect
@@ -206,23 +209,24 @@ public class GameMainScript : MonoBehaviour {
         // ここでキューに値を格納する
         // 番号のみでよい。基本番号で管理
         // csvデータをランダムにシャッフル
-        int[] Array = new int[ls_Shomon.Count]; // シャッフル用の一時配列
+        WholeCardArray = new int[ls_Shomon.Count]; // シャッフル用の一時配列
         for(int i = 0;i < ls_Shomon.Count; i++) // シャッフル用配列に値を格納
         {
-            Array[i] = ls_Shomon[i].No;
+            WholeCardArray[i] = ls_Shomon[i].No;
         }
 
-        Array = Array.Shuffle();
+        WholeCardArray = WholeCardArray.Shuffle();
 
         int MaxLength;
-        if ((DeckLimit == false) || (Array.Length < Decknum))
-            MaxLength = Array.Length;
+        if ((DeckLimit == false) || (WholeCardArray.Length < Decknum))
+            MaxLength = WholeCardArray.Length;
         else
             MaxLength = Decknum;
 
         for (int i = 0;i < MaxLength;i++)
         {
-            Card_queue.Enqueue(Array[i]); // シャッフルしたカードデータをデッキに格納
+            Card_queue.Enqueue(WholeCardArray[i]); // シャッフルしたカードデータをデッキに格納
+            WholeCardCnt = i + 1;   // ミス時のカード追加用カウント
         }
         // Card_All_strは画面のカード数。常に5
         for (int i = 0; i < Card_All_str.Length; i++){
@@ -851,6 +855,8 @@ public class GameMainScript : MonoBehaviour {
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 Card_queue.Enqueue(Card_All_int[i]);
+                                if (settingdb.CardInclude == true)  // カード追加用設定がOnなら
+                                    CardInclude();  // ミス時のカード追加処理
                                 break;
                             }
                         }
@@ -865,6 +871,18 @@ public class GameMainScript : MonoBehaviour {
         }
         NextButtonCanvas.enabled = true;    // NextCardボタン表示
         flg_Put = false;    // カード置きフラグオフ
+    }
+
+    // -------------------------------------------------------------------------
+    // CardInclude()
+    // ミス時のカード追加処理
+    // -------------------------------------------------------------------------
+    void CardInclude()
+    {
+        if(WholeCardCnt + 1 >= WholeCardArray.Length)  // 次に追加するカードがオーバーフローを起こしたら
+            WholeCardCnt = 0;   // カード追加用カウントをリセット
+        Card_queue.Enqueue(WholeCardArray[WholeCardCnt]);   // カード追加
+        WholeCardCnt++; // カード追加用カウントを加算する
     }
 
     // -------------------------------------------------------------------------

@@ -9,7 +9,7 @@ public class SettingDB : MonoBehaviour {
 		[SerializeField]
 	public int Q_num;
 	public bool BGMToggle;
-	public bool Tone;
+	public bool CardInclude;
 	public bool Song;
 	public bool Chord;
 	public bool PushNoticeA;
@@ -23,7 +23,7 @@ public class SettingDB : MonoBehaviour {
 	public SetDB(){
 		Q_num = 5;
 		BGMToggle = false;
-		Tone = true;
+		CardInclude = true;
 		Song = true;
 		Chord = true;
 		PushNoticeA = true;

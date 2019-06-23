@@ -725,10 +725,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 4c162333de54d4d45a0096b3d8c1bb72, type: 3}
-    m_FontSize: 64
+    m_FontSize: 52
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 6
+    m_MinSize: 0
     m_MaxSize: 64
     m_Alignment: 0
     m_AlignByGeometry: 0
@@ -736,7 +736,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u8ABF\u30FB\u97F3\u968E"
+  m_Text: "\u4E0D\u6B63\u89E3\u6642\u306E\u30AB\u30FC\u30C9\u8FFD\u52A0"
 --- !u!222 &121657999
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1048,10 +1048,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 4c162333de54d4d45a0096b3d8c1bb72, type: 3}
-    m_FontSize: 64
+    m_FontSize: 52
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 6
+    m_MinSize: 5
     m_MaxSize: 64
     m_Alignment: 0
     m_AlignByGeometry: 0
@@ -1248,7 +1248,7 @@ GameObject:
   - component: {fileID: 242982183}
   - component: {fileID: 242982184}
   m_Layer: 5
-  m_Name: ToneToggle
+  m_Name: CardIncludeToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9545,7 +9545,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NumbDisp: {fileID: 1052241911}
   BGMToggle: {fileID: 841331804}
-  Tone: {fileID: 242982184}
+  CardInclude: {fileID: 242982184}
   Song: {fileID: 1062358945}
   Chord: {fileID: 343378439}
   time1: {fileID: 1159921691}
@@ -12082,10 +12082,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 4c162333de54d4d45a0096b3d8c1bb72, type: 3}
-    m_FontSize: 64
+    m_FontSize: 52
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 6
+    m_MinSize: 5
     m_MaxSize: 64
     m_Alignment: 0
     m_AlignByGeometry: 0
@@ -13759,10 +13759,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 4c162333de54d4d45a0096b3d8c1bb72, type: 3}
-    m_FontSize: 64
+    m_FontSize: 52
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 6
+    m_MinSize: 5
     m_MaxSize: 64
     m_Alignment: 0
     m_AlignByGeometry: 0

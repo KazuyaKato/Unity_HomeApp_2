@@ -61,6 +61,7 @@ public class GameMainScript : MonoBehaviour {
     private Text Text_CardNum;  // デッキ枚数
     private Canvas DeckMasterCanvas;    // デッキマスターキャンバス
     private Canvas NextButtonCanvas;    // NextCardボタン
+    private Canvas MissCanvas;          // Miss時のキャンバス
 
     private Button Button_help; // ヘルプボタン
 
@@ -69,6 +70,7 @@ public class GameMainScript : MonoBehaviour {
     bool flg_CardBring; // カード保持フラグ
     bool flg_Put; // カード置きフラグ
     bool flg_JnC; // ボタン表示フラグ
+    bool flg_Miss;  // ミスフラグ
     //bool flg_operate;   // カード操作フラグ
     //bool flg_DeckMasterDisabled;    // デッキマスター非表示フラグ
 
@@ -113,10 +115,13 @@ public class GameMainScript : MonoBehaviour {
         CardField = GameObject.Find("CardField");
         DeckMaster = GameObject.Find("DeckMaster"); // デッキマスターをセット
         Text_CardNum = GameObject.Find("Text_CardNum").GetComponent<Text>();
-        //flg_DeckMasterDisabled = false; // デッキマスター非表示フラグ
+
+        // キャンバス設定
         DeckMasterCanvas = DeckMaster.GetComponent<Canvas>();
         NextButtonCanvas = 
         GameObject.Find("NextButtonCanvas").GetComponent<Canvas>();
+        MissCanvas = GameObject.Find("MissCanvas").GetComponent<Canvas>();  // 不正解用キャンバスセット
+
         strDisplayNow = ""; // 表示中間利用初期化
         myScrollRect = GameObject.Find("Sentence_Cube").GetComponent<ScrollRect>
         ();
@@ -830,6 +835,9 @@ public class GameMainScript : MonoBehaviour {
 
             }
         }
+
+        flg_Miss = false; // ミスフラグ初期化
+
         for (int i = 0; i < cnt; i++)
         {
             if(strArray[i] == "正解" || strArray[i] == "不正解")
@@ -855,8 +863,11 @@ public class GameMainScript : MonoBehaviour {
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 Card_queue.Enqueue(Card_All_int[i]);
-                                if (settingdb.CardInclude == true)  // カード追加用設定がOnなら
+                                if (settingdb.CardInclude == true)
+                                {  // カード追加用設定がOnなら
+                                    flg_Miss = true;    // ミスフラグオン
                                     CardInclude();  // ミス時のカード追加処理
+                                }
                                 break;
                             }
                         }
@@ -891,6 +902,9 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     public void NextCardButton_OnClick()
     {
+        if (flg_Miss == true)
+            MissCanvas.enabled = true;  // 不正解キャンバスを表示
+
         for (int i = 0; i < strArray.Length; i++)
         {
             if (strArray[i] == "正解" || strArray[i] == "不正解")

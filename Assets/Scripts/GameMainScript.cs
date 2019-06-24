@@ -61,7 +61,6 @@ public class GameMainScript : MonoBehaviour {
     private Text Text_CardNum;  // デッキ枚数
     private Canvas DeckMasterCanvas;    // デッキマスターキャンバス
     private Canvas NextButtonCanvas;    // NextCardボタン
-    private Canvas MissCanvas;          // Miss時のキャンバス
 
     private Button Button_help; // ヘルプボタン
 
@@ -70,13 +69,16 @@ public class GameMainScript : MonoBehaviour {
     bool flg_CardBring; // カード保持フラグ
     bool flg_Put; // カード置きフラグ
     bool flg_JnC; // ボタン表示フラグ
-    bool flg_Miss;  // ミスフラグ
-    //bool flg_operate;   // カード操作フラグ
-    //bool flg_DeckMasterDisabled;    // デッキマスター非表示フラグ
+
+    // ミス表示　ペナルティ
+    private Canvas MissCanvas;          // Miss時のキャンバス
+    private Text Text_MissDisp; // ペナルティ表示用
+    private bool flg_Miss;  // ミスフラグ
 
     // 設定　デッキの数
     bool DeckLimit = true; // デッキリミット false時は無制限
     int Decknum = 6; // デッキ数 DeckLimit = true時のみ参照
+    int cnt_MissCard = 0;   // ミスカード枚数カウント用
 
     public string strDisplayNow;   // 表示中を格納管理
 
@@ -120,7 +122,10 @@ public class GameMainScript : MonoBehaviour {
         DeckMasterCanvas = DeckMaster.GetComponent<Canvas>();
         NextButtonCanvas = 
         GameObject.Find("NextButtonCanvas").GetComponent<Canvas>();
+
+        // ペナルティ表示用
         MissCanvas = GameObject.Find("MissCanvas").GetComponent<Canvas>();  // 不正解用キャンバスセット
+        Text_MissDisp = GameObject.Find("Text_Penalty").GetComponent<Text>();   // 不正解用テキストセット
 
         strDisplayNow = ""; // 表示中間利用初期化
         myScrollRect = GameObject.Find("Sentence_Cube").GetComponent<ScrollRect>
@@ -893,6 +898,7 @@ public class GameMainScript : MonoBehaviour {
         if(WholeCardCnt + 1 >= WholeCardArray.Length)  // 次に追加するカードがオーバーフローを起こしたら
             WholeCardCnt = 0;   // カード追加用カウントをリセット
         Card_queue.Enqueue(WholeCardArray[WholeCardCnt]);   // カード追加
+        cnt_MissCard += 1;  // ミスカードカウント加算
         WholeCardCnt++; // カード追加用カウントを加算する
     }
 
@@ -902,8 +908,11 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     public void NextCardButton_OnClick()
     {
-        if (flg_Miss == true)
+        if (settingdb.CardInclude == true && flg_Miss == true)
+        {
+            Text_MissDisp.text = "Penalty + " + cnt_MissCard; 
             MissCanvas.enabled = true;  // 不正解キャンバスを表示
+        }
 
         for (int i = 0; i < strArray.Length; i++)
         {

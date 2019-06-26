@@ -65,6 +65,9 @@ public class CalendarManager : MonoBehaviour {
 
 	public static string RevQues = "";
 
+    // Review用
+    bool flg_ReviewExist = false;   // 復習モードに問題が存在するか
+
     // SaveDataManager
     SaveDataManager SDM;
 
@@ -135,6 +138,14 @@ public class CalendarManager : MonoBehaviour {
 					});
 
 		}
+
+        // Reviewモードボタン描画処理
+        string str = PlayerPrefs.GetString(SDM.GetReviewName(), "");
+        if(str == "")
+            GameObject.Find("DCMain_reviewButton").GetComponent<Image>().color = new Color(93.0f / 255.0f, 93.0f / 255.0f, 93.0f / 255.0f, 120.0f / 255.0f);
+            // ボタンの色を変える
+        else
+            flg_ReviewExist = true; // Reviewに問題がある場合はflgを書き換え
 
 	}
 

@@ -7,7 +7,7 @@ using System;
 
 public class GameMainScript : MonoBehaviour {
 
-    public static int mode = 0; // 出題のタイプ 押下ボタンによる
+    public static int mode = 0; // 出題のタイプ 押下ボタンによる mode13をreviewに当てる
 
 	struct Komoku_lst{
 		public int No;
@@ -93,11 +93,14 @@ public class GameMainScript : MonoBehaviour {
     // SaveDataManager
     SaveDataManager SDM;
 
+    // データ格納用配列　誤答 復習用
+    static ArrayList almiss = new ArrayList();
+
     // Use this for initialization
     void Start () {
         // Setting読み込み
         settingdb = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
-        Decknum = settingdb.Q_num;
+        Decknum = settingdb.Q_num; // ワンゲームのデッキ数
 
         // BGMtoggleがfalseの場合は音を止める
         if (settingdb.BGMToggle == false)
@@ -128,14 +131,22 @@ public class GameMainScript : MonoBehaviour {
         Text_MissDisp = GameObject.Find("Text_Penalty").GetComponent<Text>();   // 不正解用テキストセット
 
         strDisplayNow = ""; // 表示中間利用初期化
-        myScrollRect = GameObject.Find("Sentence_Cube").GetComponent<ScrollRect>
-        ();
+        myScrollRect = GameObject.Find("Sentence_Cube").GetComponent<ScrollRect>();
 
         Button_help = GameObject.Find("Button_help").GetComponent<Button>();
 
         SDM = GetComponent<SaveDataManager>();  // SaveDataManager
         // セーブデータ削除
         //PlayerPrefs.SetString(SDM.GetStmpName(), "");
+
+        // 復習データインポート
+        string str = PlayerPrefs.GetString("MissData","");
+        StringReader reader = new StringReader(str);
+        while (reader.Peek() > -1)
+        {
+            string line = reader.ReadLine();
+            almiss.Add(line);
+        }
 
         flg_CardBring = false;  // カード保持フラグ初期化
         flg_Put = false;        // カード置きフラグ初期化
@@ -241,6 +252,45 @@ public class GameMainScript : MonoBehaviour {
         // Card_All_strは画面のカード数。常に5
         for (int i = 0; i < Card_All_str.Length; i++){
             if (Card_All_str[i] == "") {
+                SetCSVData_Sho();  // 小項目に空があった場合
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // StuckEmptyPlace_Review
+    // 復習用に問題を格納
+    // -------------------------------------------------------------------------
+    void StuckEmptyPlace_Review()
+    {
+        // ここでキューに値を格納する
+        // 番号のみでよい。基本番号で管理
+        // csvデータをランダムにシャッフル
+
+        WholeCardArray = new int[ls_Shomon.Count]; // シャッフル用の一時配列
+        for (int i = 0; i < ls_Shomon.Count; i++) // シャッフル用配列に値を格納
+        {
+            WholeCardArray[i] = ls_Shomon[i].No;
+        }
+
+        WholeCardArray = WholeCardArray.Shuffle();
+
+        int MaxLength;
+        if ((DeckLimit == false) || (WholeCardArray.Length < Decknum))
+            MaxLength = WholeCardArray.Length;
+        else
+            MaxLength = Decknum;
+
+        for (int i = 0; i < MaxLength; i++)
+        {
+            Card_queue.Enqueue(WholeCardArray[i]); // シャッフルしたカードデータをデッキに格納
+            WholeCardCnt = i + 1;   // ミス時のカード追加用カウント
+        }
+        // Card_All_strは画面のカード数。常に5
+        for (int i = 0; i < Card_All_str.Length; i++)
+        {
+            if (Card_All_str[i] == "")
+            {
                 SetCSVData_Sho();  // 小項目に空があった場合
             }
         }
@@ -641,8 +691,8 @@ public class GameMainScript : MonoBehaviour {
     // GameEnd()
     // ゲームエンド処理
     // -------------------------------------------------------------------------
-    string GameEnd(){ // デイリーカリキュラム時のゲームエンド         GameObject obj = GameObject.Find ("SoundMaster");       if (obj != null) {          SoundMaster script = obj.GetComponent<SoundMaster> ();          script.PlaySEClr ();        }         var ls = new List<strData> ();          // 既存構造体作成          // スタンプ用保存データ取得         string DataWork = PlayerPrefs.GetString (SDM.GetStmpName (), "");          StringReader reader = new StringReader (DataWork);          if (ls.Count.Equals (0)) {          while (reader.Peek () > -1) {               string line = reader.ReadLine ();               string[] values = line.Split (',');                 if (values [0] != "")                   ls.Add (new strData (int.Parse (values [0]), int.Parse (values [1]), int.Parse (values [2]), int.Parse (values [3])));          }       }       int listyear = System.DateTime.Now.Year;        int listmonth = System.DateTime.Now.Month;      int listday = System.DateTime.Now.Day;       string sNow = listyear.ToString() + "," + listmonth.ToString("00") + "," + listday.ToString("00") + "," + mode.ToString("00");         // 比較       if (ls.Count < 1) {             return sNow; // 既存がない場合は最新のみを返す         }       string swork = "";          bool exFlg = false;         bool nwFlg = false;         string sExi = ""; // 既存データ保存用       sNow = "";        // 新規データ保存用       sExi = ls [0].year.ToString () + "," + ls [0].month.ToString ("00") + "," + ls [0].day.ToString ("00") + ","            + ls [0].mode.ToString ("00");      sNow =     listyear.ToString() + "," +     listmonth.ToString("00") + "," +     listday.ToString("00") + ","            +        mode.ToString("00");      string str_ex = ls [0].year.ToString() + ls [0].month.ToString("00") + ls [0].day.ToString("00") 
-           + ls [0].mode.ToString("00");       string str_nw =    listyear.ToString() +    listmonth.ToString("00") +    listday.ToString("00")           +        mode.ToString("00");       int i_ex = int.Parse (str_ex);      int i_nw = int.Parse (str_nw);      int i = 0;          while (true) {          if (exFlg) {    // 既存終了時                swork += sNow;              break;          }           if (nwFlg) {    // 新規終了時                swork += sExi;              break;          }           if (i_ex < i_nw) {  // 既存が小さい時              swork += sExi + System.Environment.NewLine;                 if (ls.Count > i + 1) {                     ++i;                    sExi = ls [i].year.ToString () + "," + ls [i].month.ToString ("00") + "," + ls [i].day.ToString ("00") + ","                        + ls [i].mode.ToString ("00");                  str_ex = ls [i].year.ToString() + ls [i].month.ToString("00") + ls [i].day.ToString("00")                       + ls [i].mode.ToString("00");                  i_ex = int.Parse (str_ex);              }  else {                   exFlg = true;               }               continue;           }           if (i_ex == i_nw) {                 return "already";           }           if (i_ex > i_nw) {  // 新規が小さい時              swork += sNow + System.Environment.NewLine;                 {                   nwFlg = true;                   continue;               }           }           //Debug.Log ("something wrong");            return "already";       }       //Debug.Log ("Save Successfully");      return swork;   }
+    string GameEnd(){ // デイリーカリキュラム時のゲームエンド              GameObject obj = GameObject.Find ("SoundMaster");         if (obj != null) {             SoundMaster script = obj.GetComponent<SoundMaster> ();             script.PlaySEClr ();         }          var ls = new List<strData> ();          // 既存構造体作成          // スタンプ用保存データ取得         string DataWork = PlayerPrefs.GetString (SDM.GetStmpName (), "");          StringReader reader = new StringReader (DataWork);          if (ls.Count.Equals (0)) {             while (reader.Peek () > -1) {                 string line = reader.ReadLine ();                 string[] values = line.Split (',');                 if (values [0] != "")                     ls.Add (new strData (int.Parse (values [0]), int.Parse (values [1]), int.Parse (values [2]), int.Parse (values [3])));             }         }          int listyear = System.DateTime.Now.Year;         int listmonth = System.DateTime.Now.Month;         int listday = System.DateTime.Now.Day;         string sNow = listyear.ToString() + "," + listmonth.ToString("00") + "," + listday.ToString("00") + "," + mode.ToString("00");          // 比較          if (ls.Count < 1) {             return sNow; // 既存がない場合は最新のみを返す         }          string swork = "";          bool exFlg = false;         bool nwFlg = false;          string sExi = ""; // 既存データ保存用         sNow = "";        // 新規データ保存用          sExi = ls [0].year.ToString () + "," + ls [0].month.ToString ("00") + "," + ls [0].day.ToString ("00") + ","            + ls [0].mode.ToString ("00");         sNow =     listyear.ToString() + "," +     listmonth.ToString("00") + "," +     listday.ToString("00") + ","            +        mode.ToString("00");         string str_ex = ls [0].year.ToString() + ls [0].month.ToString("00") + ls [0].day.ToString("00") 
+           + ls [0].mode.ToString("00");         string str_nw =    listyear.ToString() +    listmonth.ToString("00") +    listday.ToString("00")           +        mode.ToString("00");         int i_ex = int.Parse (str_ex);         int i_nw = int.Parse (str_nw);         int i = 0;          while (true) {             if (exFlg) {    // 既存終了時                 swork += sNow;                 break;             }             if (nwFlg) {    // 新規終了時                 swork += sExi;                 break;             }             if (i_ex < i_nw) {  // 既存が小さい時                 swork += sExi + System.Environment.NewLine;                 if (ls.Count > i + 1) {                     ++i;                    sExi = ls [i].year.ToString () + "," + ls [i].month.ToString ("00") + "," + ls [i].day.ToString ("00") + ","                        + ls [i].mode.ToString ("00");                     str_ex = ls [i].year.ToString() + ls [i].month.ToString("00") + ls [i].day.ToString("00")                       + ls [i].mode.ToString("00");                     i_ex = int.Parse (str_ex);             }  else {                 exFlg = true;             }             continue;         }          if (i_ex == i_nw) {             return "already";         }         if (i_ex > i_nw) {  // 新規が小さい時             swork += sNow + System.Environment.NewLine;             nwFlg = true;             continue;         }           //Debug.Log ("something wrong");         return "already";     }       //Debug.Log ("Save Successfully");     return swork;   }
 
 	void btnsnd(){
 		GameObject obj = GameObject.Find ("SoundMaster");
@@ -651,6 +701,23 @@ public class GameMainScript : MonoBehaviour {
 			script.PlaySEStgSnd ();
 		}
 	}
+
+    // -------------------------------------------------------------------------
+    // ReviewUpd
+    // 復習問題の項目更新 レビュー時表示する問題のセーブ
+    // -------------------------------------------------------------------------
+    public void ReviewUpd()
+    {
+        string strwork = "";
+        for(int i = 0; i < almiss.Count; i++)
+        {
+            if (strwork != "")
+                strwork += Environment.NewLine;
+            strwork += almiss[i];
+        }
+        PlayerPrefs.SetString("MissData", strwork);
+    }
+
 
     // -------------------------------------------------------------------------
     // RetryButton()
@@ -868,6 +935,8 @@ public class GameMainScript : MonoBehaviour {
                             {
                                 son.GetComponent<Image>().enabled = true;
                                 Card_queue.Enqueue(Card_All_int[i]);
+                                WrongToReview(Card_All_int[i]); // 復習に情報追加
+
                                 if (settingdb.CardInclude == true)
                                 {  // カード追加用設定がOnなら
                                     flg_Miss = true;    // ミスフラグオン
@@ -887,6 +956,21 @@ public class GameMainScript : MonoBehaviour {
         }
         NextButtonCanvas.enabled = true;    // NextCardボタン表示
         flg_Put = false;    // カード置きフラグオフ
+    }
+
+    // -------------------------------------------------------------------------
+    // WrongToReview()
+    // 不正解時のMissData反映
+    // -------------------------------------------------------------------------
+    void WrongToReview(int CAi)
+    {
+        // for Review
+        int listyear = System.DateTime.Now.Year;
+        int listmonth = System.DateTime.Now.Month;
+        int listday = System.DateTime.Now.Day;
+        string inques = listyear.ToString() + listmonth.ToString("00") + listday.ToString("00") + "," + CAi.ToString("000"); // 今日の日付8桁,問題番号
+        if (!almiss.Contains(inques))
+            almiss.Add(inques);
     }
 
     // -------------------------------------------------------------------------

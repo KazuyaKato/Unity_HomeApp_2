@@ -141,11 +141,19 @@ public class CalendarManager : MonoBehaviour {
 
         // Reviewモードボタン描画処理
         string str = PlayerPrefs.GetString(SDM.GetReviewName(), "");
-        if(str == "")
-            GameObject.Find("DCMain_reviewButton").GetComponent<Image>().color = new Color(93.0f / 255.0f, 93.0f / 255.0f, 93.0f / 255.0f, 120.0f / 255.0f);
+        if (str == "")
+        {
+            obj = GameObject.Find("DCMain_reviewButton");
+            Text txt = obj.transform.Find("Text").GetComponent<Text>();
+            txt.text = "復習モード" + System.Environment.NewLine + "本日の問題はありません";
+            txt.fontSize = 32;
+            obj.GetComponent<Button>().interactable = false;
+            obj.GetComponent<Image>().color = new Color(93.0f / 255.0f, 93.0f / 255.0f, 93.0f / 255.0f, 120.0f / 255.0f);
             // ボタンの色を変える
-        else
-            flg_ReviewExist = true; // Reviewに問題がある場合はflgを書き換え
+
+        }
+//        else
+//            flg_ReviewExist = true; // Reviewに問題がある場合はflgを書き換え
 
 	}
 

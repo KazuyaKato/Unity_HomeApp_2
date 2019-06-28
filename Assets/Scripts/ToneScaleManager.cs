@@ -571,9 +571,6 @@ public class ToneScaleManager : MonoBehaviour {
 	void CorrectNext(){ // 次の問題へ移行 1.5f
 
 		// NextChk
-		if(GMS.NextChk().Equals(false))
-			return;
-
 		GameObject obj = GameObject.Find ("CorrectSign");
 		Destroy (obj);
 		NextQuesTo ();

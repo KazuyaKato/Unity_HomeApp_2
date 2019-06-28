@@ -95,6 +95,7 @@ public class GameMainScript : MonoBehaviour {
 
     // データ格納用配列　誤答 復習用
     static ArrayList almiss = new ArrayList();
+    ArrayList alRevWholeMiss = new ArrayList();
 
     // Use this for initialization
     void Start () {
@@ -145,7 +146,7 @@ public class GameMainScript : MonoBehaviour {
         while (reader.Peek() > -1)
         {
             string line = reader.ReadLine();
-            almiss.Add(line);
+            almiss.Add(line);   // ここで格納されるMissDataは日付付き
         }
 
         flg_CardBring = false;  // カード保持フラグ初期化
@@ -164,9 +165,11 @@ public class GameMainScript : MonoBehaviour {
         // 大項目、小項目をcsvより読み込み、それぞれリストに格納する。
         readCSV(2);
 
-        // 問題文を表示
-        StuckEmptyPlace();
-
+        if (mode != 13)
+            // 問題文を表示
+            StuckEmptyPlace();
+        else
+            StuckEmptyPlace_Review();
     }
 
     // -------------------------------------------------------------------------
@@ -263,29 +266,45 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     void StuckEmptyPlace_Review()
     {
-        // ここでキューに値を格納する
-        // 番号のみでよい。基本番号で管理
-        // csvデータをランダムにシャッフル
-
-        WholeCardArray = new int[ls_Shomon.Count]; // シャッフル用の一時配列
-        for (int i = 0; i < ls_Shomon.Count; i++) // シャッフル用配列に値を格納
+        // 間違えた問題について復習する処理
+        // 復習ボタン押下後
+        // まず前日含む前日以前のデータを取得
+        string str = PlayerPrefs.GetString("RevWholeMiss");
+        StringReader reader = new StringReader(str);
+        while (reader.Peek() > -1)
         {
-            WholeCardArray[i] = ls_Shomon[i].No;
+            string line = reader.ReadLine();
+            alRevWholeMiss.Add(line);
         }
 
-        WholeCardArray = WholeCardArray.Shuffle();
+        // 今日日付作成
+        int listyear = System.DateTime.Now.Year;
+        int listmonth = System.DateTime.Now.Month;
+        int listday = System.DateTime.Now.Day;
+        string strToday = listyear.ToString() + listmonth.ToString("00") + listday.ToString("00");
 
-        int MaxLength;
-        if ((DeckLimit == false) || (WholeCardArray.Length < Decknum))
-            MaxLength = WholeCardArray.Length;
-        else
-            MaxLength = Decknum;
+        str = "";   // Work Initialize
 
-        for (int i = 0; i < MaxLength; i++)
-        {
-            Card_queue.Enqueue(WholeCardArray[i]); // シャッフルしたカードデータをデッキに格納
-            WholeCardCnt = i + 1;   // ミス時のカード追加用カウント
+        // マージする
+        for(int i = 0; i < almiss.Count; i++){
+            if (Common.Left(almiss[i].ToString(), 8) != strToday) {
+                string[] values = almiss[i].ToString().Split(',');
+                if (!alRevWholeMiss.Contains(values[1]))
+                    alRevWholeMiss.Add(values[1]);
+                else {
+                    if (str != "")
+                        str += Environment.NewLine;
+                    str += almiss[i];
+                }
+            }
         }
+
+        // 反映後はそれぞれを一旦セーブ
+        PlayerPrefs.SetString("MissData", str);
+
+        SaveRevWholeMiss(); // 復習用ミスデータを保存
+        // 問題を格納
+
         // Card_All_strは画面のカード数。常に5
         for (int i = 0; i < Card_All_str.Length; i++)
         {
@@ -294,6 +313,24 @@ public class GameMainScript : MonoBehaviour {
                 SetCSVData_Sho();  // 小項目に空があった場合
             }
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // SaveRevWholeMiss
+    // 復習用ミスデータを保存する
+    // -------------------------------------------------------------------------
+    void SaveRevWholeMiss()
+    {
+        string str = "";
+        for (int i = 0; i < alRevWholeMiss.Count; i++)
+        {
+            if (str != "")
+                str += Environment.NewLine;
+            str += alRevWholeMiss[i];
+            Card_queue.Enqueue(WholeCardArray[i]);  // 問題を格納
+        }
+        PlayerPrefs.SetString("RevWholeMiss", str);
+
     }
 
     // -------------------------------------------------------------------------
@@ -319,10 +356,6 @@ public class GameMainScript : MonoBehaviour {
                 if (Card_queue.Count > 0)
                 {
                     int tmpi = CardDequeue();
-         //           Card_All_str[i] = NoTolsCode(tmpi); // 正解コード
-           //         Card_All_int[i] = tmpi; // 番号を保存
-             //       Card_All_txt[i] = NoToSentence(tmpi);
-               //     Card_All_strHelp[i] = NoToHelpSentence(tmpi);
                     CardUpdating(i,tmpi); // カード配列更新処理
                 }
             }
@@ -627,21 +660,6 @@ public class GameMainScript : MonoBehaviour {
 		textComponent.text = work;
 	}
 
-	// 次の問題チェック
-	public bool NextChk(){
-        /*
-		if (stage.Equals (1)) {	// デイリーカリキュラム調整
-			DCcnt--;
-			if (DCcnt < 1) {
-				if(DCInit ().Equals(false))
-					return false;
-				SetSubject ();
-			}
-		}
-        */
-		return true;
-	}
-
 	// 戻るボタン
 	public void backButtonOnClick(){
         Common.btnsnd(); // ボタン音再生
@@ -673,19 +691,6 @@ public class GameMainScript : MonoBehaviour {
     {
 //        Debug.Log(_str);
     }
-
-    // -------------------------------------------------------------------------
-    // 解答ボタン押下処理
-    // -------------------------------------------------------------------------
-    public void ButtonClick(GameObject name){
-        /*
-		Text textcomponent = name.GetComponent<Text> ();
-		if (textcomponent.text == InstCls)
-			ButtonAct (true);
-		else
-			ButtonAct (false);
-            */
-	}
 
     // -------------------------------------------------------------------------
     // GameEnd()
@@ -923,9 +928,11 @@ public class GameMainScript : MonoBehaviour {
                         script.flg_EnableMove = false;
                         foreach(Transform son in child.transform)
                         {
-                            // 花丸の表示
+                            // 花丸の表示 正解処理
                             if (strArray[i] == "正解" && son.name == "Hanamaru")
                             {
+                                if(mode == 13)  // 復習モードなら
+                                    CorrectToReview(Card_All_int[i]);    // 正解の問題除外
                                 son.GetComponent<Image>().enabled = true;
                                 break;
                             }
@@ -937,7 +944,7 @@ public class GameMainScript : MonoBehaviour {
                                 Card_queue.Enqueue(Card_All_int[i]);
                                 WrongToReview(Card_All_int[i]); // 復習に情報追加
 
-                                if (settingdb.CardInclude == true)
+                                if (settingdb.CardInclude == true && mode != 13)
                                 {  // カード追加用設定がOnなら
                                     flg_Miss = true;    // ミスフラグオン
                                     CardInclude();  // ミス時のカード追加処理
@@ -959,6 +966,29 @@ public class GameMainScript : MonoBehaviour {
     }
 
     // -------------------------------------------------------------------------
+    // CorrectToReview()
+    // Reviewモードにおける正解時のMissData除外反映セーブ
+    // -------------------------------------------------------------------------
+    void CorrectToReview(int CAi)
+    {
+        // for Review
+        ArrayList alWork = new ArrayList();
+        alWork = alRevWholeMiss;
+        alRevWholeMiss = new ArrayList();
+        int cnt = 0;
+        for (int i = 0; i < alWork.Count; i++){
+            string[] words = alWork[i].ToString().Split(',');
+            if (words[1] != CAi.ToString("0000"))
+            {
+                alRevWholeMiss[cnt] = CAi.ToString("0000");
+                cnt++;
+            }
+        }
+
+        SaveRevWholeMiss(); // 復習用ミスデータを保存
+
+    }
+    // -------------------------------------------------------------------------
     // WrongToReview()
     // 不正解時のMissData反映
     // -------------------------------------------------------------------------
@@ -968,7 +998,7 @@ public class GameMainScript : MonoBehaviour {
         int listyear = System.DateTime.Now.Year;
         int listmonth = System.DateTime.Now.Month;
         int listday = System.DateTime.Now.Day;
-        string inques = listyear.ToString() + listmonth.ToString("00") + listday.ToString("00") + "," + CAi.ToString("000"); // 今日の日付8桁,問題番号
+        string inques = listyear.ToString() + listmonth.ToString("00") + listday.ToString("00") + "," + CAi.ToString("0000"); // 今日の日付8桁,問題番号
         if (!almiss.Contains(inques))
             almiss.Add(inques);
     }
@@ -992,10 +1022,12 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     public void NextCardButton_OnClick()
     {
-        if (settingdb.CardInclude == true && flg_Miss == true)
+        if (settingdb.CardInclude == true && flg_Miss == true && mode != 13)
         {
-            Text_MissDisp.text = "Penalty + " + cnt_MissCard; 
+            Text_MissDisp.text = "Penalty + " + cnt_MissCard;
             MissCanvas.enabled = true;  // 不正解キャンバスを表示
+            StartCoroutine(PenaltyEnabled(1.0f, MissCanvas));
+            cnt_MissCard = 0;
         }
 
         for (int i = 0; i < strArray.Length; i++)
@@ -1026,6 +1058,13 @@ public class GameMainScript : MonoBehaviour {
         }
         NextButtonCanvas.enabled = false;    // NextCardボタン非表示
     }
+
+    IEnumerator PenaltyEnabled(float delay, Canvas obj)
+    { // 適用しました表示
+        yield return new WaitForSeconds(delay);
+        obj.enabled = false;
+    }
+
     // --------------------------------------------------------------------------------
     // CardUpdating()
     // カード管理配列更新処理

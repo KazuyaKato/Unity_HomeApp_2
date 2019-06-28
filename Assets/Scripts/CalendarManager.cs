@@ -65,9 +65,6 @@ public class CalendarManager : MonoBehaviour {
 
 	public static string RevQues = "";
 
-    // Review用
-    bool flg_ReviewExist = false;   // 復習モードに問題が存在するか
-
     // SaveDataManager
     SaveDataManager SDM;
 
@@ -140,6 +137,9 @@ public class CalendarManager : MonoBehaviour {
 		}
 
         // Reviewモードボタン描画処理
+
+        // 復習問題データを更新
+
         string str = PlayerPrefs.GetString(SDM.GetReviewName(), "");
         if (str == "")
         {
@@ -152,16 +152,86 @@ public class CalendarManager : MonoBehaviour {
             // ボタンの色を変える
 
         }
-//        else
-//            flg_ReviewExist = true; // Reviewに問題がある場合はflgを書き換え
-
 	}
 
+    // -------------------------------------------------------------------------
+    // StuckEmptyPlace_Review
+    // 復習用に問題を格納
+    // -------------------------------------------------------------------------
+    void ReviewMerge()
+    {
+        // 間違えた問題について復習する処理
+        // 復習ボタン押下後
+        // まず前日含む前日以前のデータを取得
+        ArrayList almiss = new ArrayList();
+        ArrayList alRevWholeMiss = new ArrayList();
+        string str = PlayerPrefs.GetString("RevWholeMiss");
+        StringReader reader = new StringReader(str);
+        while (reader.Peek() > -1)
+        {
+            string line = reader.ReadLine();
+            alRevWholeMiss.Add(line);
+        }
 
+        // 今日日付作成
+        int listyear = System.DateTime.Now.Year;
+        int listmonth = System.DateTime.Now.Month;
+        int listday = System.DateTime.Now.Day;
+        string strToday = listyear.ToString() + listmonth.ToString("00") + listday.ToString("00");
 
-	/// <summary>コンポーネントの取得、設定</summary>
+        str = PlayerPrefs.GetString("MissData", "");
+        reader = new StringReader(str);
+        while (reader.Peek() > -1)
+        {
+            string line = reader.ReadLine();
+            almiss.Add(line);   // ここで格納されるMissDataは日付付き
+        }
 
-	void InitCalendarComponent()
+        str = "";
+
+        // マージする
+        for (int i = 0; i < almiss.Count; i++)
+        {
+            if (Common.Left(almiss[i].ToString(), 8) != strToday)
+            {
+                string[] values = almiss[i].ToString().Split(',');
+                if (!alRevWholeMiss.Contains(values[1]))
+                    alRevWholeMiss.Add(values[1]);
+                else
+                {
+                    if (str != "")
+                        str += Environment.NewLine;
+                    str += almiss[i];
+                }
+            }
+        }
+
+        // 反映後はそれぞれを一旦セーブ
+        PlayerPrefs.SetString("MissData", str);
+
+        SaveRevWholeMiss(alRevWholeMiss); // 復習用ミスデータを保存
+    }
+
+// -------------------------------------------------------------------------
+// SaveRevWholeMiss
+// 復習用ミスデータを保存する
+// -------------------------------------------------------------------------
+void SaveRevWholeMiss(ArrayList alRevWholeMiss)
+{
+    string str = "";
+    for (int i = 0; i < alRevWholeMiss.Count; i++)
+    {
+        if (str != "")
+            str += Environment.NewLine;
+        str += alRevWholeMiss[i];
+    }
+    PlayerPrefs.SetString("RevWholeMiss", str);
+
+}
+
+/// <summary>コンポーネントの取得、設定</summary>
+
+void InitCalendarComponent()
 
 	{
 

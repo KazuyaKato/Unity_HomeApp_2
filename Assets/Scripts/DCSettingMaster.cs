@@ -10,8 +10,6 @@ public class DCSettingMaster : MonoBehaviour {
 	public static int numbCnt = 6;
 	public Toggle BGMToggle;	// 学習中の音楽再生
 	public Toggle CardInclude;	// ミス時のカード増加設定
-	public Toggle Song;// 03曲名と作曲者
-	public Toggle Chord;	// 04和音とコードネーム
 	public Toggle time1;
 	public Toggle time2;
 	public SettingDB.SetDB settingdb;
@@ -39,8 +37,6 @@ public class DCSettingMaster : MonoBehaviour {
 		NumbDisp.text = numbCnt.ToString();
         BGMToggle.isOn = settingdb.BGMToggle;		
 		CardInclude.isOn = settingdb.CardInclude;
-		Song.isOn = settingdb.Song;
-		Chord.isOn = settingdb.Chord;
 		time1.isOn = settingdb.PushNoticeA;
 		time2.isOn = settingdb.PushNoticeB;
 
@@ -105,7 +101,7 @@ public class DCSettingMaster : MonoBehaviour {
 
 	public void LeftOnclick(){
 		btnsnd ();
-		if (numbCnt > 6) {
+		if (numbCnt > 5) {
 			numbCnt--;
 			NumbDisp.text = numbCnt.ToString ();
 		}
@@ -125,8 +121,6 @@ public class DCSettingMaster : MonoBehaviour {
 		settingdb.Q_num = numbCnt;
 		settingdb.BGMToggle = BGMToggle.isOn;
 		settingdb.CardInclude = CardInclude.isOn;
-		settingdb.Song = Song.isOn;
-		settingdb.Chord = Chord.isOn;
 		settingdb.PushNoticeA = time1.isOn;
 		settingdb.PushNoticeB = time2.isOn;
 

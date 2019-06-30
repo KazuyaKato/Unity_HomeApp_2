@@ -1119,6 +1119,7 @@ public class GameMainScript : MonoBehaviour {
             if (Card_All_str[i] != "")
                 return;
         }
+        ReviewUpd();    // 復習モード用に情報アップロード
         string str = GameEnd();
         if (str != "already")
             PlayerPrefs.SetString(SDM.GetStmpName(), str);

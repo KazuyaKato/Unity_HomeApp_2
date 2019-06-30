@@ -136,6 +136,7 @@ public class CalendarManager : MonoBehaviour {
 
 		}
 
+        ReviewMerge(); // 復習モード更新
         // Reviewモードボタン描画処理
 
         // 復習問題データを更新
@@ -155,7 +156,7 @@ public class CalendarManager : MonoBehaviour {
 	}
 
     // -------------------------------------------------------------------------
-    // StuckEmptyPlace_Review
+    // ReviewMerge
     // 復習用に問題を格納
     // -------------------------------------------------------------------------
     void ReviewMerge()
@@ -197,12 +198,12 @@ public class CalendarManager : MonoBehaviour {
                 string[] values = almiss[i].ToString().Split(',');
                 if (!alRevWholeMiss.Contains(values[1]))
                     alRevWholeMiss.Add(values[1]);
-                else
-                {
-                    if (str != "")
-                        str += Environment.NewLine;
-                    str += almiss[i];
-                }
+            }
+            else
+            {
+                if (str != "")
+                    str += Environment.NewLine;
+                str += almiss[i];
             }
         }
 

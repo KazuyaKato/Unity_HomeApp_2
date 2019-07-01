@@ -202,10 +202,16 @@ public class GameMainScript : MonoBehaviour {
             }
             string lslevel = words[2];
             if (mode == 0)
-                mode = 1;   
-            if (lslevel != mode.ToString()) // ここでバージョンを決める
-                continue;   
+                mode = 1;
 
+            int i = 0;
+            string s = lslevel;
+            bool result = int.TryParse(s, out i);
+            if (result == false)
+                continue;
+            if ((mode != 13) && (lslevel != mode.ToString())) // ここでバージョンを決める
+                continue;   
+                
             switch (_komoku)
             {
                 case 1: // 1 = 大項目
@@ -275,6 +281,7 @@ public class GameMainScript : MonoBehaviour {
         {
             string line = reader.ReadLine();
             alRevWholeMiss.Add(line);
+            Card_queue.Enqueue(int.Parse(line));    // デッキに追加
         }
 
         // 今日日付作成
@@ -290,8 +297,12 @@ public class GameMainScript : MonoBehaviour {
             if (Common.Left(almiss[i].ToString(), 8) != strToday) {
                 string[] values = almiss[i].ToString().Split(',');
                 if (!alRevWholeMiss.Contains(values[1]))
+                {
                     alRevWholeMiss.Add(values[1]);
-                else {
+                    Card_queue.Enqueue(int.Parse(values[1]));    // デッキに追加
+                }
+                else
+                {
                     if (str != "")
                         str += Environment.NewLine;
                     str += almiss[i];
@@ -318,6 +329,8 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     // SaveRevWholeMiss
     // 復習用ミスデータを保存する
+    // 復習モードでのみ使用
+    // ここでは現在のalRevWholeMissを分解し保存する
     // -------------------------------------------------------------------------
     void SaveRevWholeMiss()
     {
@@ -327,7 +340,6 @@ public class GameMainScript : MonoBehaviour {
             if (str != "")
                 str += Environment.NewLine;
             str += alRevWholeMiss[i];
-            Card_queue.Enqueue(WholeCardArray[i]);  // 問題を格納
         }
         PlayerPrefs.SetString("RevWholeMiss", str);
 
@@ -488,6 +500,8 @@ public class GameMainScript : MonoBehaviour {
                 Card_All_str[cnt] + " : " + Card_All_txt[cnt];
             else
                 textComponent.text = Card_All_txt[cnt];
+            if (textComponent.text == "")   // 入れる値がなくば無効化
+                child.gameObject.SetActive(false);
             cnt++;
 
             Text_CardNum.text = Card_queue.Count.ToString();
@@ -696,7 +710,7 @@ public class GameMainScript : MonoBehaviour {
     // GameEnd()
     // ゲームエンド処理
     // -------------------------------------------------------------------------
-    string GameEnd(){ // デイリーカリキュラム時のゲームエンド              GameObject obj = GameObject.Find ("SoundMaster");         if (obj != null) {             SoundMaster script = obj.GetComponent<SoundMaster> ();             script.PlaySEClr ();         }          var ls = new List<strData> ();          // 既存構造体作成          // スタンプ用保存データ取得         string DataWork = PlayerPrefs.GetString (SDM.GetStmpName (), "");          StringReader reader = new StringReader (DataWork);          if (ls.Count.Equals (0)) {             while (reader.Peek () > -1) {                 string line = reader.ReadLine ();                 string[] values = line.Split (',');                 if (values [0] != "")                     ls.Add (new strData (int.Parse (values [0]), int.Parse (values [1]), int.Parse (values [2]), int.Parse (values [3])));             }         }          int listyear = System.DateTime.Now.Year;         int listmonth = System.DateTime.Now.Month;         int listday = System.DateTime.Now.Day;         string sNow = listyear.ToString() + "," + listmonth.ToString("00") + "," + listday.ToString("00") + "," + mode.ToString("00");          // 比較          if (ls.Count < 1) {             return sNow; // 既存がない場合は最新のみを返す         }          string swork = "";          bool exFlg = false;         bool nwFlg = false;          string sExi = ""; // 既存データ保存用         sNow = "";        // 新規データ保存用          sExi = ls [0].year.ToString () + "," + ls [0].month.ToString ("00") + "," + ls [0].day.ToString ("00") + ","            + ls [0].mode.ToString ("00");         sNow =     listyear.ToString() + "," +     listmonth.ToString("00") + "," +     listday.ToString("00") + ","            +        mode.ToString("00");         string str_ex = ls [0].year.ToString() + ls [0].month.ToString("00") + ls [0].day.ToString("00") 
+    string GameEnd(){ // デイリーカリキュラム時のゲームエンド              GameObject obj = GameObject.Find ("SoundMaster");         if (obj != null) {             SoundMaster script = obj.GetComponent<SoundMaster> ();             script.PlaySEClr ();         }          if (mode == 13) // 復習モードなら             return "already";          var ls = new List<strData> ();          // 既存構造体作成          // スタンプ用保存データ取得         string DataWork = PlayerPrefs.GetString (SDM.GetStmpName (), "");          StringReader reader = new StringReader (DataWork);          if (ls.Count.Equals (0)) {             while (reader.Peek () > -1) {                 string line = reader.ReadLine ();                 string[] values = line.Split (',');                 if (values [0] != "")                     ls.Add (new strData (int.Parse (values [0]), int.Parse (values [1]), int.Parse (values [2]), int.Parse (values [3])));             }         }          int listyear = System.DateTime.Now.Year;         int listmonth = System.DateTime.Now.Month;         int listday = System.DateTime.Now.Day;         string sNow = listyear.ToString() + "," + listmonth.ToString("00") + "," + listday.ToString("00") + "," + mode.ToString("00");          // 比較          if (ls.Count < 1) {             return sNow; // 既存がない場合は最新のみを返す         }          string swork = "";          bool exFlg = false;         bool nwFlg = false;          string sExi = ""; // 既存データ保存用         sNow = "";        // 新規データ保存用          sExi = ls [0].year.ToString () + "," + ls [0].month.ToString ("00") + "," + ls [0].day.ToString ("00") + ","            + ls [0].mode.ToString ("00");         sNow =     listyear.ToString() + "," +     listmonth.ToString("00") + "," +     listday.ToString("00") + ","            +        mode.ToString("00");         string str_ex = ls [0].year.ToString() + ls [0].month.ToString("00") + ls [0].day.ToString("00") 
            + ls [0].mode.ToString("00");         string str_nw =    listyear.ToString() +    listmonth.ToString("00") +    listday.ToString("00")           +        mode.ToString("00");         int i_ex = int.Parse (str_ex);         int i_nw = int.Parse (str_nw);         int i = 0;          while (true) {             if (exFlg) {    // 既存終了時                 swork += sNow;                 break;             }             if (nwFlg) {    // 新規終了時                 swork += sExi;                 break;             }             if (i_ex < i_nw) {  // 既存が小さい時                 swork += sExi + System.Environment.NewLine;                 if (ls.Count > i + 1) {                     ++i;                    sExi = ls [i].year.ToString () + "," + ls [i].month.ToString ("00") + "," + ls [i].day.ToString ("00") + ","                        + ls [i].mode.ToString ("00");                     str_ex = ls [i].year.ToString() + ls [i].month.ToString("00") + ls [i].day.ToString("00")                       + ls [i].mode.ToString("00");                     i_ex = int.Parse (str_ex);             }  else {                 exFlg = true;             }             continue;         }          if (i_ex == i_nw) {             return "already";         }         if (i_ex > i_nw) {  // 新規が小さい時             swork += sNow + System.Environment.NewLine;             nwFlg = true;             continue;         }           //Debug.Log ("something wrong");         return "already";     }       //Debug.Log ("Save Successfully");     return swork;   }
 
 	void btnsnd(){
@@ -977,10 +991,10 @@ public class GameMainScript : MonoBehaviour {
         alRevWholeMiss = new ArrayList();
         int cnt = 0;
         for (int i = 0; i < alWork.Count; i++){
-            string[] words = alWork[i].ToString().Split(',');
-            if (words[1] != CAi.ToString("0000"))
+            string str = CAi.ToString("0000");
+            if (alWork[i].ToString() != str)
             {
-                alRevWholeMiss[cnt] = CAi.ToString("0000");
+                alRevWholeMiss.Add(str);
                 cnt++;
             }
         }

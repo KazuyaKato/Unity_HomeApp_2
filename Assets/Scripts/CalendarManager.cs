@@ -136,13 +136,11 @@ public class CalendarManager : MonoBehaviour {
 
 		}
 
-        ReviewMerge(); // 復習モード更新
         // Reviewモードボタン描画処理
 
         // 復習問題データを更新
 
-        string str = PlayerPrefs.GetString(SDM.GetReviewName(), "");
-        if (str == "")
+        if (ReviewMerge() == false)
         {
             obj = GameObject.Find("DCMain_reviewButton");
             Text txt = obj.transform.Find("Text").GetComponent<Text>();
@@ -159,7 +157,7 @@ public class CalendarManager : MonoBehaviour {
     // ReviewMerge
     // 復習用に問題を格納
     // -------------------------------------------------------------------------
-    void ReviewMerge()
+    bool ReviewMerge()
     {
         // 間違えた問題について復習する処理
         // 復習ボタン押下後
@@ -181,6 +179,9 @@ public class CalendarManager : MonoBehaviour {
         string strToday = listyear.ToString() + listmonth.ToString("00") + listday.ToString("00");
 
         str = PlayerPrefs.GetString("MissData", "");
+        // Debug
+        // str = "20190629,0635\n20190629,0795";
+
         reader = new StringReader(str);
         while (reader.Peek() > -1)
         {
@@ -210,14 +211,14 @@ public class CalendarManager : MonoBehaviour {
         // 反映後はそれぞれを一旦セーブ
         PlayerPrefs.SetString("MissData", str);
 
-        SaveRevWholeMiss(alRevWholeMiss); // 復習用ミスデータを保存
+        return SaveRevWholeMiss(alRevWholeMiss); // 復習用ミスデータを保存
     }
 
 // -------------------------------------------------------------------------
 // SaveRevWholeMiss
 // 復習用ミスデータを保存する
 // -------------------------------------------------------------------------
-void SaveRevWholeMiss(ArrayList alRevWholeMiss)
+bool SaveRevWholeMiss(ArrayList alRevWholeMiss)
 {
     string str = "";
     for (int i = 0; i < alRevWholeMiss.Count; i++)
@@ -227,7 +228,10 @@ void SaveRevWholeMiss(ArrayList alRevWholeMiss)
         str += alRevWholeMiss[i];
     }
     PlayerPrefs.SetString("RevWholeMiss", str);
-
+        if (str != "")
+            return true;
+        else
+            return false;
 }
 
 /// <summary>コンポーネントの取得、設定</summary>
@@ -494,48 +498,26 @@ void InitCalendarComponent()
     public void StartOnClick(){
 		btnsnd ();
 
-		// ReviewSchene追加
-		RevQues = PlayerPrefs.GetString ("MscRevdata", "");
+		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("ChooseMode");
 
-		// 0202 Add
-		SettingDB.SetDB settingdb;
-		// Save Data Load
-		settingdb = SaveData.GetClass<SettingDB.SetDB> ("Setting", new SettingDB.SetDB ());
-		System.Collections.ArrayList alex = new System.Collections.ArrayList (); // データ格納用配列
-		StringReader reader = new StringReader (RevQues);
-		while (reader.Peek () > -1) {
-			string line = reader.ReadLine ();
-			alex.Add (line);	// 1データずつ格納(教科,No)
-		}
-		bool flg = false;
-		int i;
-		for (i = 0; i < alex.Count; i++) {
-			string work = alex [i].ToString ();
-			string[] values = work.Split (',');
-			int ClassMode = int.Parse (values [0]);
-
-		}
-
-		if(flg)
-			UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("Review");
-		else
-			UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("ChooseMode");
-
-/*
-		if (RevQues.Equals ("")) {
-			UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("DCConfirm");
-			return;
-		}
-		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("Review");
-		// 追加End
-*/
 	}
 
-	// --------------------------------------------------------------------------------
-	// SettingOnClick
-	// 設定ボタン押下
-	// --------------------------------------------------------------------------------
-	public void SettingOnClick(){
+    // --------------------------------------------------------------------------------
+    // ReviewOnClick
+    // スタートボタン押下
+    // --------------------------------------------------------------------------------
+    public void ReviewOnClick()
+    {
+        btnsnd();
+        GameMainScript.mode = 13;   // 復習モード番号
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("GameMain");
+    }
+
+    // --------------------------------------------------------------------------------
+    // SettingOnClick
+    // 設定ボタン押下
+    // --------------------------------------------------------------------------------
+    public void SettingOnClick(){
 		btnsnd ();
 		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("DCSetting");
 	}

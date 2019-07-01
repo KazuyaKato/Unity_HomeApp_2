@@ -35,6 +35,29 @@ public class Common : MonoBehaviour {
         return str.Substring(0, len);
     }
 
+    /// <summary>
+    /// 文字列の末尾から指定した長さの文字列を取得する
+    /// </summary>
+    /// <param name="str">文字列</param>
+    /// <param name="len">長さ</param>
+    /// <returns>取得した文字列</returns>
+    public static string Right(string str, int len)
+    {
+        if (len < 0)
+        {
+            Debug.Log("引数'len'は0以上でなければなりません。");
+        }
+        if (str == null)
+        {
+            return "";
+        }
+        if (str.Length <= len)
+        {
+            return str;
+        }
+        return str.Substring(str.Length - len, len);
+    }
+
     // --------------------------------------------------------------------------------
     // SetSubject
     // 数値に応じた単元名を返す
@@ -221,21 +244,16 @@ public class Common : MonoBehaviour {
 		}
 		return null;
 	}
-    /*
-	public static bool SetSubjectCheck(int _no){
-		bool flg = false;
-		SettingDB.SetDB settingdb;
-		// Save Data Load
-		settingdb = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
-		if ((_no == 0) && settingdb.BGMtoggle)
-			flg = true;
-		if ((_no == 1) && settingdb.Tone)
-			flg = true;
-		if ((_no == 2) && settingdb.Song)
-			flg = true;
-		if ((_no == 3) && settingdb.Chord)
-			flg = true;
-		return flg;
-	}
-    */
+    // --------------------------------------------------------------------------------
+    // GetDate
+    // 今日日付を8桁で返す
+    // --------------------------------------------------------------------------------
+    public static string GetDate()
+    {
+        // 今日日付作成
+        int listyear = System.DateTime.Now.Year;
+        int listmonth = System.DateTime.Now.Month;
+        int listday = System.DateTime.Now.Day;
+        return listyear.ToString() + listmonth.ToString("00") + listday.ToString("00");
+    }
 }

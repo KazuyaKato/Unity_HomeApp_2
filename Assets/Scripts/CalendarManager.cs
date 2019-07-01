@@ -139,8 +139,40 @@ public class CalendarManager : MonoBehaviour {
         // Reviewモードボタン描画処理
 
         // 復習問題データを更新
+        // このReviewMargeがどうやらやたら重い。
+        // どうせ１日１回だけの処理なので１回だけしか行われないようにすればよい
+        // 方法としてはせーぶデータを使う方法
+        // DailyCheckと銘打ち
+        // 今日の日付、結果を保持
+        // ex 20190701F またはT
+        // Debug
+        // PlayerPrefs.SetString("DailyCheck", "19890207F");
+        string str = PlayerPrefs.GetString("DailyCheck","19890207F");   // デイリーチェックの最終実施日をロード
+        bool flg = false;   // 今日実施できる復習問題の有無フラグ
+        string strToday = Common.GetDate();
+        if (Common.Left(str, 8) == strToday)
+        {    // 今日のものであれば
+            if (Common.Right(str, 1) == "T") {    // 有りと判定がすでに出ていれば
+                if (PlayerPrefs.GetString("RevWholeMiss", "") != "")
+                flg = true; // 復習モードを解放
+            }
+            else
+            {
+                PlayerPrefs.SetString("DailyCheck", strToday + "F");   // デイリーチェックの最終実施日を更新
+            }
 
-        if (ReviewMerge() == false)
+        }
+        else
+            if (ReviewMerge() == true)
+        {   // 今日実施分があれば
+            flg = true; // 復習モードを解放
+            PlayerPrefs.SetString("DailyCheck", strToday + "T");   // デイリーチェックの最終実施日を更新
+        }
+        else
+            PlayerPrefs.SetString("DailyCheck", strToday + "F");   // デイリーチェックの最終実施日を更新
+
+
+        if (flg == false)
         {
             obj = GameObject.Find("DCMain_reviewButton");
             Text txt = obj.transform.Find("Text").GetComponent<Text>();
@@ -164,7 +196,7 @@ public class CalendarManager : MonoBehaviour {
         // まず前日含む前日以前のデータを取得
         ArrayList almiss = new ArrayList();
         ArrayList alRevWholeMiss = new ArrayList();
-        string str = PlayerPrefs.GetString("RevWholeMiss");
+        string str = PlayerPrefs.GetString("RevWholeMiss","");
         StringReader reader = new StringReader(str);
         while (reader.Peek() > -1)
         {
@@ -172,11 +204,7 @@ public class CalendarManager : MonoBehaviour {
             alRevWholeMiss.Add(line);
         }
 
-        // 今日日付作成
-        int listyear = System.DateTime.Now.Year;
-        int listmonth = System.DateTime.Now.Month;
-        int listday = System.DateTime.Now.Day;
-        string strToday = listyear.ToString() + listmonth.ToString("00") + listday.ToString("00");
+        string strToday = Common.GetDate(); // 共通より日付取得
 
         str = PlayerPrefs.GetString("MissData", "");
         // Debug

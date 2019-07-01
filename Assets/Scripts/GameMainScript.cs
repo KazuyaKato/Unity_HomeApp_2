@@ -677,7 +677,7 @@ public class GameMainScript : MonoBehaviour {
 	// 戻るボタン
 	public void backButtonOnClick(){
         Common.btnsnd(); // ボタン音再生
-        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("ChooseMode");
+        BackPlace();
     }
 
     // 解説登録
@@ -751,7 +751,7 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     public void ToMenuButton()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("ChooseMode");
+        BackPlace();    // 戻る処理
     }
 
     // -------------------------------------------------------------------------
@@ -992,9 +992,10 @@ public class GameMainScript : MonoBehaviour {
         int cnt = 0;
         for (int i = 0; i < alWork.Count; i++){
             string str = CAi.ToString("0000");
-            if (alWork[i].ToString() != str)
+            string strW = alWork[i].ToString(); // 既存を格納
+            if (strW != str)
             {
-                alRevWholeMiss.Add(str);
+                alRevWholeMiss.Add(strW);
                 cnt++;
             }
         }
@@ -1250,4 +1251,17 @@ public class GameMainScript : MonoBehaviour {
     {
         return flg_CardBring;
    }
+
+    // -------------------------------------------------------------------------
+    // BackPlace()
+    // 戻り先処理
+    // -------------------------------------------------------------------------
+    void BackPlace()
+    {
+        if (mode == 13)  // モードによって返り先を決める
+            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("DCMain");
+        else
+            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("ChooseMode");
+    }
+
 }

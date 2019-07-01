@@ -94,7 +94,8 @@ public class GameMainScript : MonoBehaviour {
     SaveDataManager SDM;
 
     // データ格納用配列　誤答 復習用
-    static ArrayList almiss = new ArrayList();
+    static ArrayList almiss;
+    string StrAlMiss = "";
     ArrayList alRevWholeMiss = new ArrayList();
 
     // Use this for initialization
@@ -141,12 +142,14 @@ public class GameMainScript : MonoBehaviour {
         //PlayerPrefs.SetString(SDM.GetStmpName(), "");
 
         // 復習データインポート
+        almiss = new ArrayList(); // 配列の初期化
         string str = PlayerPrefs.GetString("MissData","");
         StringReader reader = new StringReader(str);
         while (reader.Peek() > -1)
         {
             string line = reader.ReadLine();
             almiss.Add(line);   // ここで格納されるMissDataは日付付き
+            ReviewUpd(line);  // MissData保存用に格納
         }
 
         flg_CardBring = false;  // カード保持フラグ初期化
@@ -725,18 +728,12 @@ public class GameMainScript : MonoBehaviour {
     // ReviewUpd
     // 復習問題の項目更新 レビュー時表示する問題のセーブ
     // -------------------------------------------------------------------------
-    public void ReviewUpd()
+    public void ReviewUpd(string str)
     {
-        string strwork = "";
-        for(int i = 0; i < almiss.Count; i++)
-        {
-            if (strwork != "")
-                strwork += Environment.NewLine;
-            strwork += almiss[i];
-        }
-        PlayerPrefs.SetString("MissData", strwork);
+        if (StrAlMiss != "")
+            StrAlMiss += Environment.NewLine;
+        StrAlMiss += str;
     }
-
 
     // -------------------------------------------------------------------------
     // RetryButton()
@@ -1015,7 +1012,10 @@ public class GameMainScript : MonoBehaviour {
         int listday = System.DateTime.Now.Day;
         string inques = listyear.ToString() + listmonth.ToString("00") + listday.ToString("00") + "," + CAi.ToString("0000"); // 今日の日付8桁,問題番号
         if (!almiss.Contains(inques))
+        {
             almiss.Add(inques);
+            ReviewUpd(inques);  // MissData保存用に格納
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -1134,7 +1134,9 @@ public class GameMainScript : MonoBehaviour {
             if (Card_All_str[i] != "")
                 return;
         }
-        ReviewUpd();    // 復習モード用に情報アップロード
+
+        PlayerPrefs.SetString("MissData", StrAlMiss); // 復習モード用に情報アップロード
+
         string str = GameEnd();
         if (str != "already")
             PlayerPrefs.SetString(SDM.GetStmpName(), str);

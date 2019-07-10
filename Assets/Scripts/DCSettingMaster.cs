@@ -129,6 +129,7 @@ public class DCSettingMaster : MonoBehaviour {
 		MyScroll script;
 		LocalNoticeScript LNScript = GetComponent<LocalNoticeScript>();
 		LNScript.ClearLocalNotification ();
+        LNScript.CancelAllLocalNotification();
 		if (time1.isOn.Equals (true)) {
 			obj = GameObject.Find ("ScrollViewHourA");
 			script = obj.GetComponent<MyScroll> ();

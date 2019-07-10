@@ -32,12 +32,11 @@ public class LocalNoticeScript : MonoBehaviour {
 			LocalNotification simpleNotification = new LocalNotification ();
 			simpleNotification.alertAction = alAct;
 			simpleNotification.alertBody = hour + ":" + (min).ToString("00") + " It's time to stydy!!";
-			simpleNotification.applicationIconBadgeNumber = 2;
+			simpleNotification.applicationIconBadgeNumber = 1;
 			DateTime dt = DateTime.Now;
 			if (hour < dt.Hour)
 				dt = dt.AddDays (1);
 			simpleNotification.fireDate = new DateTime (dt.Year, dt.Month, dt.Day, hour, min, 0, DateTimeKind.Local);
-			// まだ分からないが通知が２つ来てしまうのはここでリセットをかませればなんとかなるかもしれない
 			NotificationServices.ScheduleLocalNotification (simpleNotification);
 		#endif
 	}

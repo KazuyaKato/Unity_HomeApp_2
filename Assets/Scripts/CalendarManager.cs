@@ -68,6 +68,9 @@ public class CalendarManager : MonoBehaviour {
     // SaveDataManager
     SaveDataManager SDM;
 
+    // For Store Review
+    bool StoreReviewFlg = false;
+
     // Use this for initialization
     void Start () {
 		#if UNITY_IOS
@@ -338,7 +341,16 @@ void InitCalendarComponent()
 			}
 		}
 
-		int cnt = 0;
+        // For Store Review
+        if (StoreReviewFlg == false &&
+            ((ls.Count == 10) ||
+            (ls.Count > 11 && ls.Count % 30 == 0)))
+        {
+            AskReview();    // ストアレビューをお願いする。
+            StoreReviewFlg = true;  // 今回はもう表示しない。
+        }
+
+        int cnt = 0;
 
 		foreach (var cDay in Days)
 		{
@@ -565,5 +577,53 @@ void InitCalendarComponent()
 			script.PlaySEStgSnd ();
 		}
 	}
+
+    // --------------------------------------------------------------------------------
+    // AskReview
+    // レビューお伺い処理
+    // --------------------------------------------------------------------------------
+    Canvas StoreReviewCanvas;
+    void AskReview()
+    {
+        // スタンプ10個になったらレビューを聞く
+        // アプリ内レビューが可能な時はそのままレビュー催促
+
+#if iOS_DEVICE
+        // アプリ内レビューに対応している場合はアプリ内で表示
+            if (StoreReviewManager.Instance.CanReviewInApp)
+            {
+                StoreReviewManager.Instance.RequestReview();
+            }
+            // そうでない時は確認
+            else
+            {
+                // レビューしますか？みたいなUIを表示
+                StoreReviewCanvas = GameObject.Find("StoreReviewCanvas").GetComponent<Canvas>();
+                StoreReviewCanvas.enabled = true;
+            }
+#elif ANDROID_DEVICE
+                StoreReviewCanvas = GameObject.Find("StoreReviewCanvas").GetComponent<Canvas>();
+                StoreReviewCanvas.enabled = true;
+#endif       
+    }
+
+    // --------------------------------------------------------------------------------
+    // Click_StoreReviewYes
+    // レビューしてもらえるボタン押下処理
+    // --------------------------------------------------------------------------------
+    public void Click_StoreReviewYes()
+    {
+        StoreReviewCanvas.enabled = false; // 評価キャンバス非表示
+        StoreReviewManager.Instance.RequestReview();    // ストアに転送
+    }
+
+    // --------------------------------------------------------------------------------
+    // Click_StoreReviewNo
+    // レビューしてもらえないボタン押下処理
+    // --------------------------------------------------------------------------------
+    public void Click_StoreReviewNo()
+    {
+        StoreReviewCanvas.enabled = false; // 評価キャンバス非表示
+    }
 
 }

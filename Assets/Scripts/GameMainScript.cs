@@ -52,32 +52,31 @@ public class GameMainScript : MonoBehaviour {
     bool[] Card_All_help = new bool[5]; // ヘルプボタン押されたか判定
     string[] Card_All_strHelp = new string[5];  // ヘルプ用テキストデータ
 
-    GameObject Deck; // カード５枚の親
-    GameObject CardField; // カードフィールド(場)
+    GameObject OBJ_DECK; // カード５枚の親
+    GameObject OBJ_CARD_FIELD; // カードフィールド(場)
     public GameObject CorrectPanel; // 正解の花丸イメージ
     public GameObject PanelClear;   // クリアパネル
-    private GameObject tForm;
-    private GameObject DeckMaster;
-    private Text Text_CardNum;  // デッキ枚数
-    private Canvas DeckMasterCanvas;    // デッキマスターキャンバス
-    private Canvas NextButtonCanvas;    // NextCardボタン
+    private GameObject OBJ_JUDGE_CANVAS;
+    private GameObject OBJ_DECK_MASTER;
+    private Text TEXT_CARD_NUM;  // デッキ枚数
+    private Text TEXT_MISS_DISP; // ペナルティ表示用
+    private Canvas CVS_DECK_MASTER;    // デッキマスターキャンバス
+    private Canvas CVS_NEXT_BUTTON;    // NextCardボタン
+    private Canvas CVS_MISS;          // Miss時のキャンバス
 
     private Button Button_help; // ヘルプボタン
 
     Queue<int> Card_queue = new Queue<int>(); // カードデッキキュー
 
-    bool flg_CardBring; // カード保持フラグ
-    bool flg_Put; // カード置きフラグ
-    bool flg_JnC; // ボタン表示フラグ
-
+    private bool flg_CardBring; // カード保持フラグ
+    private bool flg_Put; // カード置きフラグ
+    private bool flg_JnC; // ボタン表示フラグ
     // ミス表示　ペナルティ
-    private Canvas MissCanvas;          // Miss時のキャンバス
-    private Text Text_MissDisp; // ペナルティ表示用
     private bool flg_Miss;  // ミスフラグ
 
     // 設定　デッキの数
     bool DeckLimit = true; // デッキリミット false時は無制限
-    int Decknum = 6; // デッキ数 DeckLimit = true時のみ参照
+    int DECK_NUM = 6; // デッキ数 DeckLimit = true時のみ参照
     int cnt_MissCard = 0;   // ミスカード枚数カウント用
 
     public string strDisplayNow;   // 表示中を格納管理
@@ -85,10 +84,10 @@ public class GameMainScript : MonoBehaviour {
     int[] WholeCardArray;   // 全カード格納配列
     int WholeCardCnt;   // 全カード格納配列用カウント
 
-    SettingDB.SetDB settingdb;
+    SettingDB.SetDB SETTING_DB;
 
     // scrollRect
-    ScrollRect myScrollRect;
+    ScrollRect SCROLLRECT_MY;
 
     // SaveDataManager
     SaveDataManager SDM;
@@ -101,39 +100,31 @@ public class GameMainScript : MonoBehaviour {
     // Use this for initialization
     void Start () {
         // Setting読み込み
-        settingdb = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
-        Decknum = settingdb.Q_num; // ワンゲームのデッキ数
+        SETTING_DB = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
+        DECK_NUM = SETTING_DB.Q_num; // ワンゲームのデッキ数
 
-        // BGMtoggleがfalseの場合は音を止める
-        if (settingdb.BGMToggle == false)
-        {
-            GameObject obj = GameObject.Find("SoundMaster");
-            if (obj != null)
-            {
-                SoundMaster script = obj.GetComponent<SoundMaster>();
-                script.StopBGM();
-            }
-        }
+        // デバッグ用 音がない時のエラー回避
+        Debug_MusicStop();
 
-        tForm = GameObject.Find("JudgeChargeCanvas");
-        ColPos_Judge();
-        flg_JnC = false; // ボタン表示フラグをオフ
-        Deck = GameObject.Find("Deck");
-        CardField = GameObject.Find("CardField");
-        DeckMaster = GameObject.Find("DeckMaster"); // デッキマスターをセット
-        Text_CardNum = GameObject.Find("Text_CardNum").GetComponent<Text>();
-
-        // キャンバス設定
-        DeckMasterCanvas = DeckMaster.GetComponent<Canvas>();
-        NextButtonCanvas = 
-        GameObject.Find("NextButtonCanvas").GetComponent<Canvas>();
-
+        // オブジェクトセット
+        OBJ_JUDGE_CANVAS = GameObject.Find("JudgeChargeCanvas");
+        OBJ_DECK = GameObject.Find("Deck");
+        OBJ_CARD_FIELD = GameObject.Find("CardField");
+        OBJ_DECK_MASTER = GameObject.Find("DeckMaster"); // デッキマスターをセット
+        TEXT_CARD_NUM = GameObject.Find("Text_CardNum").GetComponent<Text>();
         // ペナルティ表示用
-        MissCanvas = GameObject.Find("MissCanvas").GetComponent<Canvas>();  // 不正解用キャンバスセット
-        Text_MissDisp = GameObject.Find("Text_Penalty").GetComponent<Text>();   // 不正解用テキストセット
+        TEXT_MISS_DISP = GameObject.Find("Text_Penalty").GetComponent<Text>();   // 不正解用テキストセット
+        CVS_NEXT_BUTTON = GameObject.Find("NextButtonCanvas").GetComponent<Canvas>();
+        CVS_MISS = GameObject.Find("MissCanvas").GetComponent<Canvas>();  // 不正解用キャンバスセット
+        CVS_DECK_MASTER = OBJ_DECK_MASTER.GetComponent<Canvas>();
+
+        // いらないかもよ　ColPos_Judge();
+
+        flg_JnC = false; // ボタン表示フラグをオフ
+
 
         strDisplayNow = ""; // 表示中間利用初期化
-        myScrollRect = GameObject.Find("Sentence_Cube").GetComponent<ScrollRect>();
+        SCROLLRECT_MY = GameObject.Find("Sentence_Cube").GetComponent<ScrollRect>();
 
         Button_help = GameObject.Find("Button_help").GetComponent<Button>();
 
@@ -173,6 +164,24 @@ public class GameMainScript : MonoBehaviour {
             StuckEmptyPlace();
         else
             StuckEmptyPlace_Review();
+    }
+
+    // -------------------------------------------------------------------------
+    // Debug_MusicStop
+    // デバッグ用　音の停止判定
+    // -------------------------------------------------------------------------
+    void Debug_MusicStop()
+    {
+        // BGMtoggleがfalseの場合は音を止める
+        if (SETTING_DB.BGMToggle == false)
+        {
+            GameObject obj = GameObject.Find("SoundMaster");
+            if (obj != null)
+            {
+                SoundMaster script = obj.GetComponent<SoundMaster>();
+                script.StopBGM();
+            }
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -251,10 +260,10 @@ public class GameMainScript : MonoBehaviour {
         WholeCardArray = WholeCardArray.Shuffle();
 
         int MaxLength;
-        if ((DeckLimit == false) || (WholeCardArray.Length < Decknum))
+        if ((DeckLimit == false) || (WholeCardArray.Length < DECK_NUM))
             MaxLength = WholeCardArray.Length;
         else
-            MaxLength = Decknum;
+            MaxLength = DECK_NUM;
 
         for (int i = 0;i < MaxLength;i++)
         {
@@ -493,7 +502,7 @@ public class GameMainScript : MonoBehaviour {
     {
         // 小項目の描画(大項目は直接描画しているため必要なし)
         int cnt = 0;
-        foreach (Transform child in Deck.transform)
+        foreach (Transform child in OBJ_DECK.transform)
         {
             CardDrag script = child.GetComponent<CardDrag>();
             script.str_Help = Card_All_strHelp[cnt];   
@@ -507,7 +516,7 @@ public class GameMainScript : MonoBehaviour {
                 child.gameObject.SetActive(false);
             cnt++;
 
-            Text_CardNum.text = Card_queue.Count.ToString();
+            TEXT_CARD_NUM.text = Card_queue.Count.ToString();
 
             // 詳細の箇所は空欄にする。
             ChangeText_SC("");
@@ -592,7 +601,7 @@ public class GameMainScript : MonoBehaviour {
             if (Card_All_str[i] == "")
             {
                 int cnt = 0;
-                foreach (Transform child in Deck.transform)
+                foreach (Transform child in OBJ_DECK.transform)
                 {
                     if (i == cnt)
                     {
@@ -613,7 +622,7 @@ public class GameMainScript : MonoBehaviour {
         }
         if (chk >= Card_All_str.Length)
         {
-            foreach (Transform child in Deck.transform)
+            foreach (Transform child in OBJ_DECK.transform)
             {
                 child.gameObject.SetActive(true);
             }
@@ -622,7 +631,7 @@ public class GameMainScript : MonoBehaviour {
 
 
         // 全てのカードに対し、初期位置へ戻れ命令。
-        foreach (Transform child in Deck.transform)
+        foreach (Transform child in OBJ_DECK.transform)
         {
             CardDrag script = child.GetComponent<CardDrag>();
             script.InitPos();
@@ -759,7 +768,7 @@ public class GameMainScript : MonoBehaviour {
         int i = Card_queue.Dequeue();
         if (Card_queue.Count == 0)
         {   // デッキが0になったら
-            DeckMaster.SetActive(false);    // デッキマスター非表示
+            OBJ_DECK_MASTER.SetActive(false);    // デッキマスター非表示
             //flg_DeckMasterDisabled = true;  // デッキマスター非表示フラグ
         }
         return i;
@@ -810,6 +819,7 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     // ColPos_Judge
     // それぞれの床に聞きに行く
+    // フィールドにカードが乗っているか否か
     // -------------------------------------------------------------------------
     static bool ColPos_Judge()  // それぞれの床に聞きに行く
     {
@@ -857,7 +867,7 @@ public class GameMainScript : MonoBehaviour {
 
         // 正解・不正解判定
         cnt = 0; // カウント用
-        foreach(Transform child in Deck.transform)
+        foreach(Transform child in OBJ_DECK.transform)
         {
             cnt++;
         }
@@ -872,7 +882,7 @@ public class GameMainScript : MonoBehaviour {
         // 問題はどれがどのフィールドに置かれているかということ
         // これを取得すればよい。
 
-        foreach(Transform CFChild in CardField.transform)
+        foreach(Transform CFChild in OBJ_CARD_FIELD.transform)
         {
             foreach(Transform son in CFChild.transform)
             {
@@ -930,7 +940,7 @@ public class GameMainScript : MonoBehaviour {
         {
             if(strArray[i] == "正解" || strArray[i] == "不正解")
             {
-                foreach (Transform child in Deck.transform)
+                foreach (Transform child in OBJ_DECK.transform)
                 {
                     if(child.name == "card_" + i)
                     {
@@ -955,7 +965,7 @@ public class GameMainScript : MonoBehaviour {
                                 Card_queue.Enqueue(Card_All_int[i]);
                                 WrongToReview(Card_All_int[i]); // 復習に情報追加
 
-                                if (settingdb.CardInclude == true && mode != 13)
+                                if (SETTING_DB.CardInclude == true && mode != 13)
                                 {  // カード追加用設定がOnなら
                                     flg_Miss = true;    // ミスフラグオン
                                     CardInclude();  // ミス時のカード追加処理
@@ -972,7 +982,7 @@ public class GameMainScript : MonoBehaviour {
                 }
             }
         }
-        NextButtonCanvas.enabled = true;    // NextCardボタン表示
+        CVS_NEXT_BUTTON.enabled = true;    // NextCardボタン表示
         flg_Put = false;    // カード置きフラグオフ
     }
 
@@ -1037,11 +1047,11 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     public void NextCardButton_OnClick()
     {
-        if (settingdb.CardInclude == true && flg_Miss == true && mode != 13)
+        if (SETTING_DB.CardInclude == true && flg_Miss == true && mode != 13)
         {
-            Text_MissDisp.text = "Penalty + " + cnt_MissCard;
-            MissCanvas.enabled = true;  // 不正解キャンバスを表示
-            StartCoroutine(PenaltyEnabled(1.0f, MissCanvas));
+            TEXT_MISS_DISP.text = "Penalty + " + cnt_MissCard;
+            CVS_MISS.enabled = true;  // 不正解キャンバスを表示
+            StartCoroutine(PenaltyEnabled(1.0f, CVS_MISS));
             cnt_MissCard = 0;
         }
 
@@ -1049,7 +1059,7 @@ public class GameMainScript : MonoBehaviour {
         {
             if (strArray[i] == "正解" || strArray[i] == "不正解")
             {
-                foreach (Transform child in Deck.transform)
+                foreach (Transform child in OBJ_DECK.transform)
                 {
                     if (child.name == "card_" + i)
                     {
@@ -1071,7 +1081,7 @@ public class GameMainScript : MonoBehaviour {
                 }
             }
         }
-        NextButtonCanvas.enabled = false;    // NextCardボタン非表示
+        CVS_NEXT_BUTTON.enabled = false;    // NextCardボタン非表示
     }
 
     IEnumerator PenaltyEnabled(float delay, Canvas obj)
@@ -1098,7 +1108,7 @@ public class GameMainScript : MonoBehaviour {
     // --------------------------------------------------------------------------------
     public void DeckMasterOverrideSorting(int _i)
     {
-        DeckMasterCanvas.sortingOrder = _i;
+        CVS_DECK_MASTER.sortingOrder = _i;
     }
 
     // --------------------------------------------------------------------------------
@@ -1153,7 +1163,7 @@ public class GameMainScript : MonoBehaviour {
     public void OnClick_Help()
     {
         // フラグ変更
-        foreach (Transform child in Deck.transform)
+        foreach (Transform child in OBJ_DECK.transform)
         {
             if(child.gameObject.name == strDisplayNow) // 現在表示中のものを探す
             {
@@ -1183,7 +1193,7 @@ public class GameMainScript : MonoBehaviour {
     public void ChangeText_SC(string _txt)
     {
         Text_SC.text = _txt;
-        myScrollRect.verticalNormalizedPosition = 1f;   // スクロールバーをトップへ
+        SCROLLRECT_MY.verticalNormalizedPosition = 1f;   // スクロールバーをトップへ
     }
 
     // -------------------------------------------------------------------------
@@ -1193,7 +1203,7 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     void Change_JudgenChangeButton(bool _flg)
     {
-        tForm.GetComponent<Canvas>().enabled = _flg;
+        OBJ_JUDGE_CANVAS.GetComponent<Canvas>().enabled = _flg;
         flg_JnC = _flg;
     }
 
@@ -1203,7 +1213,7 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     public void DeckMasterDisabledFunc(bool _flg)
     {
-        DeckMaster.SetActive(_flg);
+        OBJ_DECK_MASTER.SetActive(_flg);
     }
 
     // -------------------------------------------------------------------------
@@ -1213,7 +1223,7 @@ public class GameMainScript : MonoBehaviour {
     public void CardDrag_flgActCheck()
     {
         // 全てのカードのフラグ状態をチェック
-        foreach (Transform child in Deck.transform)
+        foreach (Transform child in OBJ_DECK.transform)
         {
             CardDrag script = child.GetComponent<CardDrag>();
             if (script.flg_Act == true) // まだ実施中のものがあれば処理を廃棄

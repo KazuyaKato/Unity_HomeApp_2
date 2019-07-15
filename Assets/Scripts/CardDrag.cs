@@ -25,7 +25,10 @@ public class CardDrag : MonoBehaviour
 
     Image Hanamaru; // 花丸マーク
     Image Batu; // 罰マーク
+    Image CARD_IMAGE;   // カードイメージ
     Vector3 DeckMasterPos;  // デッキマスター座標
+
+    Text TXT_CARD;  // カードテキスト
 
     // --------------------------------------------------------------------------------
     // OnDrag
@@ -52,6 +55,7 @@ public class CardDrag : MonoBehaviour
     // -------------------------------------------------------------------------
     public void PointerDown()   // 振れた時の処理。詳細欄に内容が表示される
     {
+        CARD_IMAGE.enabled = false; // カードイメージ非表示
         DisplayText_SC(); // 詳細欄への記入処理
         pointerflg = true; // 持っている
         GMScript.Changeflg_CardBring(true); // 持ってますよフラグオン
@@ -148,9 +152,12 @@ public class CardDrag : MonoBehaviour
         GMScript = GameMain.GetComponent<GameMainScript>();
         Hanamaru = this.transform.Find("Hanamaru").GetComponent<Image>();
         Batu = this.transform.Find("Batu").GetComponent<Image>();
+        CARD_IMAGE = this.transform.Find("Home").GetComponent<Image>(); // カードイメージ格納
         DeckMasterPos = GameObject.Find("DeckMaster").transform.Find("card").gameObject
             .transform.position;
         thisnamenum = int.Parse(this.name.Replace("card_", ""));
+        TXT_CARD = this.gameObject.GetComponentInChildren<Text>();  // カードテキスト
+        TXT_CARD.text = "";
     }
 
     // --------------------------------------------------------------------------------

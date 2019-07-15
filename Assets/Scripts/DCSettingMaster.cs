@@ -10,6 +10,7 @@ public class DCSettingMaster : MonoBehaviour {
 	public static int numbCnt = 6;
 	public Toggle BGMToggle;	// 学習中の音楽再生
 	public Toggle CardInclude;	// ミス時のカード増加設定
+    public Toggle TGL_WORD_DISPLAY;
 	public Toggle time1;
 	public Toggle time2;
 	public SettingDB.SetDB settingdb;
@@ -37,6 +38,7 @@ public class DCSettingMaster : MonoBehaviour {
 		NumbDisp.text = numbCnt.ToString();
         BGMToggle.isOn = settingdb.BGMToggle;		
 		CardInclude.isOn = settingdb.CardInclude;
+        TGL_WORD_DISPLAY.isOn = settingdb.SETTING_WORD_DISPLAY;
 		time1.isOn = settingdb.PushNoticeA;
 		time2.isOn = settingdb.PushNoticeB;
 
@@ -121,6 +123,7 @@ public class DCSettingMaster : MonoBehaviour {
 		settingdb.Q_num = numbCnt;
 		settingdb.BGMToggle = BGMToggle.isOn;
 		settingdb.CardInclude = CardInclude.isOn;
+        settingdb.SETTING_WORD_DISPLAY = TGL_WORD_DISPLAY.isOn;
 		settingdb.PushNoticeA = time1.isOn;
 		settingdb.PushNoticeB = time2.isOn;
 

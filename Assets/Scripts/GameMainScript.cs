@@ -385,7 +385,7 @@ public class GameMainScript : MonoBehaviour {
                 }
             }
         }
-            DrawScreen();
+//            DrawScreen();
     }
     // -------------------------------------------------------------------------
     // NoTolsCode(int _no)
@@ -506,7 +506,7 @@ public class GameMainScript : MonoBehaviour {
         foreach (Transform child in OBJ_DECK.transform)
         {
             CardDrag script = child.GetComponent<CardDrag>();
-            script.str_Help = Card_All_strHelp[cnt];   
+            script.str_Help = Card_All_strHelp[cnt];
             Text textComponent = child.GetComponentInChildren<Text>();
             if (DebugFlg.isOn == true)
                 textComponent.text = 
@@ -665,13 +665,6 @@ public class GameMainScript : MonoBehaviour {
 
 	// 連続カウント処理
 	public void Con_Count(bool _res){
-        /*
-		if(_res.Equals(true))
-			NoCA += 1;
-		else
-			NoCA = 0;
-		DispNoCAupd ();
-        */
 	}
 
 	// 解説表示

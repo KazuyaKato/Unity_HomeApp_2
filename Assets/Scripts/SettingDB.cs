@@ -10,6 +10,7 @@ public class SettingDB : MonoBehaviour {
 	public int Q_num;
 	public bool BGMToggle;
 	public bool CardInclude;
+    public bool SETTING_WORD_DISPLAY;
 	public bool Song;
 	public bool Chord;
 	public bool PushNoticeA;
@@ -24,6 +25,7 @@ public class SettingDB : MonoBehaviour {
 		Q_num = 5;
 		BGMToggle = false;
 		CardInclude = true;
+        SETTING_WORD_DISPLAY = false;
 		Song = true;
 		Chord = true;
 		PushNoticeA = true;

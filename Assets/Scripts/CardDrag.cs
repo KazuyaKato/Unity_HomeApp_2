@@ -83,14 +83,6 @@ public class CardDrag : MonoBehaviour
     // -------------------------------------------------------------------------
     public void PointerUp() // 手を離した時の処理。
     {
-/*        GameObject obj = GameObject.Find("SoundMaster");
-        if (obj != null)
-        {
-            SoundMaster script = obj.GetComponent<SoundMaster>();
-            script.PlaySEPaperFlip();
-        }
-        */
-
         GMScript.Changeflg_CardBring(false); // 持ってますよフラグoff
         if (colflg == false)
         {
@@ -143,8 +135,12 @@ public class CardDrag : MonoBehaviour
             colflg = true;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    // --------------------------------------------------------------------------------
+    // Awake
+    // Startより早い処理
+    // この関数は常に Start 関数の前およびプレハブのインスタンス化直後に呼び出されます。(もしゲームオブジェクトがスタートアップ時に無効である場合、有効になるまで Awake は呼び出されません。)
+    // --------------------------------------------------------------------------------
+    void Awake()
     {
         posx = this.transform.position.x;
         posy = this.transform.position.y;
@@ -155,6 +151,17 @@ public class CardDrag : MonoBehaviour
         DeckMasterPos = GameObject.Find("DeckMaster").transform.Find("card").gameObject
             .transform.position;
         thisnamenum = int.Parse(this.name.Replace("card_", ""));
+    }
+
+    // --------------------------------------------------------------------------------
+    // Start
+    // スクリプトのインスタンスが有効な場合にのみ、最初のフレームのアップデート前に Start が呼び出されます。
+    // シーンに追加されたオブジェクトの Start 関数はすべてのスクリプトで Update や他の関数が呼び出される前に呼び出されます。当然のことながらオブジェクトがゲームプレイ中にインスタンス化されたときに強制的に呼び出すことはできません。
+    // --------------------------------------------------------------------------------
+    void Start()
+    {
+        Card_Revival(); // カード復活処理
+        GMScript.DeckMasterDisabledFunc(false);
     }
 
     // Update is called once per frame

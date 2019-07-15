@@ -98,7 +98,7 @@ public class GameMainScript : MonoBehaviour {
     ArrayList alRevWholeMiss = new ArrayList();
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
         // Setting読み込み
         SETTING_DB = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
         DECK_NUM = SETTING_DB.Q_num; // ワンゲームのデッキ数
@@ -116,7 +116,9 @@ public class GameMainScript : MonoBehaviour {
         TEXT_MISS_DISP = GameObject.Find("Text_Penalty").GetComponent<Text>();   // 不正解用テキストセット
         CVS_NEXT_BUTTON = GameObject.Find("NextButtonCanvas").GetComponent<Canvas>();
         CVS_MISS = GameObject.Find("MissCanvas").GetComponent<Canvas>();  // 不正解用キャンバスセット
+
         CVS_DECK_MASTER = OBJ_DECK_MASTER.GetComponent<Canvas>();
+        SCROLLRECT_MY = GameObject.Find("Sentence_Cube").GetComponent<ScrollRect>();
 
         // いらないかもよ　ColPos_Judge();
 
@@ -124,7 +126,6 @@ public class GameMainScript : MonoBehaviour {
 
 
         strDisplayNow = ""; // 表示中間利用初期化
-        SCROLLRECT_MY = GameObject.Find("Sentence_Cube").GetComponent<ScrollRect>();
 
         Button_help = GameObject.Find("Button_help").GetComponent<Button>();
 
@@ -1213,6 +1214,8 @@ public class GameMainScript : MonoBehaviour {
     // -------------------------------------------------------------------------
     public void DeckMasterDisabledFunc(bool _flg)
     {
+        if ((_flg == false) && (Card_queue.Count > 0))
+                return;
         OBJ_DECK_MASTER.SetActive(_flg);
     }
 
@@ -1241,8 +1244,7 @@ public class GameMainScript : MonoBehaviour {
                     child.SetActive(true);  // デッキを再表示にする
                     CardDrag script = child.GetComponent<CardDrag>();
                     script.Card_Revival(); // カード復活処理
-                    if (Card_queue.Count == 0)
-                        DeckMasterDisabledFunc(false);  // デッキを再度非表示にする
+                    DeckMasterDisabledFunc(false);  // デッキを再度非表示にする
                 }
                 else
                 {

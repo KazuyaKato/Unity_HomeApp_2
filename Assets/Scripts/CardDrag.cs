@@ -19,7 +19,8 @@ public class CardDrag : MonoBehaviour
     private bool flg_DeckBack = false;   // デッキに戻るフラグ
     public bool flg_Act = false;    // 処理中フラグ 処理中はオン
 
-    // help機能用
+    // カード表示用
+    public string str_MainTxt = ""; // 本文の内容
     public bool flg_Help = false;   // ヘルプ機能のonoff
     public string str_Help = "";    // ヘルプ内容
 
@@ -70,8 +71,7 @@ public class CardDrag : MonoBehaviour
     {
         if (flg_Help == false)  // ヘルプフラグチェック_True時はヘルプ反映のものを表示
         {  
-            GMScript.ChangeText_SC // テキストの変更
-            (this.gameObject.GetComponentInChildren<Text>().text);
+            GMScript.ChangeText_SC(str_MainTxt); // テキストの変更
             GMScript.HelpButtonEnabled(true);   // ボタン表示ON
         }
         else

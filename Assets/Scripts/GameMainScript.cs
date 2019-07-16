@@ -101,6 +101,15 @@ public class GameMainScript : MonoBehaviour {
     void Awake () {
         // Setting読み込み
         SETTING_DB = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
+/*        try
+        {
+            SETTING_DB = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
+        }
+        catch(NullReferenceException ex)
+        {
+
+        }
+ */
         DECK_NUM = SETTING_DB.Q_num; // ワンゲームのデッキ数
 
         // デバッグ用 音がない時のエラー回避
@@ -506,6 +515,7 @@ public class GameMainScript : MonoBehaviour {
         foreach (Transform child in OBJ_DECK.transform)
         {
             CardDrag script = child.GetComponent<CardDrag>();
+            script.str_MainTxt = Card_All_str[cnt];
             script.str_Help = Card_All_strHelp[cnt];
             Text textComponent = child.GetComponentInChildren<Text>();
             if (DebugFlg.isOn == true)

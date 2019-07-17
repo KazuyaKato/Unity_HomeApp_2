@@ -18,6 +18,7 @@ public class CardDrag : MonoBehaviour
     public bool flg_EnableMove = true;  // カード操作可能フラグ
     private bool flg_DeckBack = false;   // デッキに戻るフラグ
     public bool flg_Act = false;    // 処理中フラグ 処理中はオン
+    bool flg_CardFlip = false;
 
     // カード表示用
     public string str_MainTxt = ""; // 本文の内容
@@ -56,12 +57,49 @@ public class CardDrag : MonoBehaviour
     // -------------------------------------------------------------------------
     public void PointerDown()   // 振れた時の処理。詳細欄に内容が表示される
     {
-        CARD_IMAGE.enabled = false; // カードイメージ非表示
+        if(flg_CardFlip == false)
+            StartCoroutine("CardOpen");
         DrawCard(str_MainTxt); // カードへの描画処理
         DisplayText_SC(); // 詳細欄への記入処理
         pointerflg = true; // 持っている
         GMScript.Changeflg_CardBring(true); // 持ってますよフラグオン
         GMScript.strDisplayNow = this.gameObject.name;  // 本オブジェクトの名前
+    }
+    //カードのGameObjectにアタッチしたScriptに記述
+    //右回転用
+    IEnumerator CardOpen()
+    {
+        //カードを予め-180度回転させ裏面用の画像を表示する
+        //裏面表示はコルーチン外で行っても良い
+        //CanvasGroupでなくspriteのalpha値を操作しても良い
+        transform.eulerAngles = new Vector3(0, 180, 0);
+        // ReversedFace_CanvasGroup.alpha = 1f;
+
+        float angle = -180f;
+        float Speed = 300f;
+        //-90度を超えるまで回転
+        while (angle < -90f)
+        {
+            angle += Speed * Time.deltaTime;
+            transform.eulerAngles = new Vector3(0, angle, 0);
+            yield return null;
+        }
+
+        //裏面用の画像を非表示(表面が表示される)
+        // ReversedFace_CanvasGroup.alpha = 0f;
+        CARD_IMAGE.enabled = false;
+
+        //0度まで回転
+        while (angle < 0f)
+        {
+            angle += Speed * Time.deltaTime;
+            transform.eulerAngles = new Vector3(0, angle, 0);
+            yield return null;
+        }
+
+        //綺麗に0度にならないことがあるため、補正
+        transform.eulerAngles = new Vector3(0, 0, 0);
+        flg_CardFlip = true;
     }
 
     // -------------------------------------------------------------------------
@@ -100,6 +138,7 @@ public class CardDrag : MonoBehaviour
     // --------------------------------------------------------------------------------
     // InitPos
     // 初期位置処理
+    // 手を離した時に初期位置へ戻る。衝突フラグはオフにする。
     // --------------------------------------------------------------------------------
     public void InitPos()
     {
@@ -109,6 +148,7 @@ public class CardDrag : MonoBehaviour
     // --------------------------------------------------------------------------------
     // DeckBackFunc()
     // 初期位置処理
+    // 不正解時のみ通る
     // --------------------------------------------------------------------------------
     public void DeckBackFunc()
     {
@@ -286,6 +326,7 @@ public class CardDrag : MonoBehaviour
     {
         DrawCard("");// テキスト非表示
         CARD_IMAGE.enabled = true;  // カードロゴ表示
+        flg_CardFlip = false;   // カード不リップフラグオフ
     }
 
 }

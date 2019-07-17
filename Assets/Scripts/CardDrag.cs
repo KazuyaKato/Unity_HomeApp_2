@@ -57,6 +57,7 @@ public class CardDrag : MonoBehaviour
     public void PointerDown()   // 振れた時の処理。詳細欄に内容が表示される
     {
         CARD_IMAGE.enabled = false; // カードイメージ非表示
+        DrawCard(str_MainTxt); // カードへの描画処理
         DisplayText_SC(); // 詳細欄への記入処理
         pointerflg = true; // 持っている
         GMScript.Changeflg_CardBring(true); // 持ってますよフラグオン
@@ -192,9 +193,7 @@ public class CardDrag : MonoBehaviour
             else
             {
                 flg_Reduction = false;
-                flg_Act = false;
-                GMScript.FieldCountCheck(thisnamenum);
-                GMScript.CardDrag_flgActCheck();    // フラグアクトチェック
+                InitCardDisp(thisnamenum);
             }
         }
 
@@ -210,17 +209,23 @@ public class CardDrag : MonoBehaviour
             {
                 flg_DeckBack = false;
                 GMScript.DeckMasterOverrideSorting(1);  // マスターデッキを落とす
-                GMScript.FieldCountCheck(thisnamenum); // カードデータ初期化
-                flg_Act = false;
-                GMScript.CardDrag_flgActCheck();    // フラグアクトチェック
+                InitCardDisp(thisnamenum);
             }
         }
 
     }
 
+    void InitCardDisp(int thisnamenum) // カード表示初期化
+    {
+        flg_Act = false;
+        GMScript.FieldCountCheck(thisnamenum);
+        GMScript.CardDrag_flgActCheck();    // フラグアクトチェック
+        NewCard();
+    }
+
     // --------------------------------------------------------------------------------
     // Card_Revival()
-    // カード復活処理
+    // カード復活処理 from GameMainScript カード補充時の処理
     // --------------------------------------------------------------------------------
     public void Card_Revival()
     {
@@ -263,5 +268,24 @@ public class CardDrag : MonoBehaviour
         return colflg;
     }
 
+    // --------------------------------------------------------------------------------
+    // DrawCard()
+    // カード描画処理
+    // --------------------------------------------------------------------------------
+    void DrawCard(string str)
+    {
+        Text textComponent = GetComponentInChildren<Text>();
+        textComponent.text = str;
+    }
+
+    // --------------------------------------------------------------------------------
+    // NewCard()
+    // 新カードドロー処理
+    // --------------------------------------------------------------------------------
+    void NewCard()
+    {
+        DrawCard("");// テキスト非表示
+        CARD_IMAGE.enabled = true;  // カードロゴ表示
+    }
 
 }

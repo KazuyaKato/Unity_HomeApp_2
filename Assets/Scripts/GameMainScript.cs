@@ -394,7 +394,8 @@ public class GameMainScript : MonoBehaviour {
                 }
             }
         }
-//            DrawScreen();
+        Ques_Store();
+    //            DrawScreen();
     }
     // -------------------------------------------------------------------------
     // NoTolsCode(int _no)
@@ -1257,7 +1258,8 @@ public class GameMainScript : MonoBehaviour {
             }
         }
         PaneClearCheck();
-        DrawScreen();   // デッキ枚数描画等
+        //        DrawScreen();   // デッキ枚数描画等
+        Ques_Store(); // データ格納
     }
 
     // -------------------------------------------------------------------------
@@ -1281,4 +1283,27 @@ public class GameMainScript : MonoBehaviour {
             UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("ChooseMode");
     }
 
+    // -------------------------------------------------------------------------
+    // Ques_Store
+    // 問題格納処理
+    // -------------------------------------------------------------------------
+    void Ques_Store()
+    {
+        int cnt = 0;
+        foreach (Transform child in OBJ_DECK.transform)
+        {
+            CardDrag script = child.GetComponent<CardDrag>();
+            script.str_MainTxt = Card_All_txt[cnt];
+            script.str_Help = Card_All_strHelp[cnt];
+            Text textComponent = child.GetComponentInChildren<Text>();
+            cnt++;
+
+            TEXT_CARD_NUM.text = Card_queue.Count.ToString();
+
+            // 詳細の箇所は空欄にする。
+            ChangeText_SC("カードをタップ");
+            strDisplayNow = ""; // 表示用も空にする
+        }
+
+    }
 }

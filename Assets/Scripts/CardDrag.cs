@@ -28,6 +28,7 @@ public class CardDrag : MonoBehaviour
     Image Hanamaru; // 花丸マーク
     Image Batu; // 罰マーク
     Image CARD_IMAGE;   // カードイメージ
+    Image PIN;  // ピン
     Vector3 DeckMasterPos;  // デッキマスター座標
 
     Text TXT_CARD;  // カードテキスト
@@ -64,6 +65,7 @@ public class CardDrag : MonoBehaviour
         pointerflg = true; // 持っている
         GMScript.Changeflg_CardBring(true); // 持ってますよフラグオン
         GMScript.strDisplayNow = this.gameObject.name;  // 本オブジェクトの名前
+        PIN.enabled = false;    // ピンを非表示
     }
     //カードのGameObjectにアタッチしたScriptに記述
     //右回転用
@@ -133,6 +135,10 @@ public class CardDrag : MonoBehaviour
             pointerflg = false; // 持っていない
             GMScript.Changeflg_Put(false); // 置きflgをoffへ？
         }
+        else
+        {
+            PIN.enabled = true; // ピンを表示
+        }
     }
 
     // --------------------------------------------------------------------------------
@@ -199,6 +205,8 @@ public class CardDrag : MonoBehaviour
         thisnamenum = int.Parse(this.name.Replace("card_", ""));
         TXT_CARD = this.gameObject.GetComponentInChildren<Text>();  // カードテキスト
         TXT_CARD.text = "";
+        PIN = this.transform.Find("Pin").GetComponent<Image>(); // ピン
+        PIN.enabled = false;    // ピンを非表示
     }
 
     // --------------------------------------------------------------------------------

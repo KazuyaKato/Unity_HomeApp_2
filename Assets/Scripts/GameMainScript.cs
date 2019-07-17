@@ -7,7 +7,9 @@ using System;
 
 public class GameMainScript : MonoBehaviour {
 
+    // 設定
     public static int mode = 0; // 出題のタイプ 押下ボタンによる mode13をreviewに当てる
+    int DispMode = 1;   // 0 = 標準 1 = コルクモード
 
 	struct Komoku_lst{
 		public int No;
@@ -34,10 +36,9 @@ public class GameMainScript : MonoBehaviour {
     public int GameLevel;
     //	public int dbgnum = 83;
 
-
     // 02曲再生用
-    AudioClip JukeClip;
-	AudioSource audiosource;
+    // AudioClip JukeClip;
+	// AudioSource audiosource;
 
     // Text
     public Text Daikomoku_txt;
@@ -99,17 +100,12 @@ public class GameMainScript : MonoBehaviour {
 
     // Use this for initialization
     void Awake () {
+        // 画面モード設定
+        
+        
         // Setting読み込み
         SETTING_DB = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
-/*        try
-        {
-            SETTING_DB = SaveData.GetClass<SettingDB.SetDB>("Setting", new SettingDB.SetDB());
-        }
-        catch(NullReferenceException ex)
-        {
 
-        }
- */
         DECK_NUM = SETTING_DB.Q_num; // ワンゲームのデッキ数
 
         // デバッグ用 音がない時のエラー回避
@@ -175,7 +171,20 @@ public class GameMainScript : MonoBehaviour {
         else
             StuckEmptyPlace_Review();
     }
+/*
+    void DispModeSet()  // 画面モードセット
+    {
+        switch (DispMode)
+        {
+            case 1: // コルクモード
+                OBJ_CARD_FIELD.gameObject.transform.Find("JuniorHigh_Cube/Image").gameObject.GetComponent<Image>() = 
+                break;
+            default:
+                break;
+        }
 
+}
+*/
     // -------------------------------------------------------------------------
     // Debug_MusicStop
     // デバッグ用　音の停止判定

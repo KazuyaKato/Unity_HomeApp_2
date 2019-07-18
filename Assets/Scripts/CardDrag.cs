@@ -161,6 +161,7 @@ public class CardDrag : MonoBehaviour
         flg_DeckBack = true;    // デッキにカードを戻す処理
         GMScript.DeckMasterOverrideSorting(2);  // マスターデッキを浮かせる
         flg_Act = true; // フラグ挙動
+        PIN.enabled = false;    // ピンを非表示
     }
 
     // --------------------------------------------------------------------------------
@@ -290,6 +291,7 @@ public class CardDrag : MonoBehaviour
         Hanamaru.enabled = false; // 花丸マークdisabled
         Batu.enabled = false; // 罰マークdisabled
         flg_Help = false;   // ヘルプフラグ初期化
+        PIN.enabled = false;    // ピン非表示
 
         // カードが元の位置に戻る処理
         colflg = false;
